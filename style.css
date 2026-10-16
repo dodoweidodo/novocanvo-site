@@ -506,19 +506,35 @@ html[data-theme="paper"] section.inv{border-color:rgba(0,0,0,.15);
 }
 
 /* 关键词条：只有词，解释点开才出 */
+/* 点开的格子＝单独浮起来的反色小片（石墨灰底／浅色字），不撑高所在行 */
 .kw{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);
   border-left:1px solid var(--line);margin-top:34px}
-.kw details{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kw details{position:relative;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
 .kw summary{list-style:none;cursor:pointer;padding:17px 18px;font-size:14px;
-  display:flex;align-items:center;justify-content:space-between;gap:14px}
+  display:flex;align-items:center;justify-content:space-between;gap:14px;transition:background .18s}
+.kw summary:hover{background:rgba(0,0,0,.045)}
 .kw summary::-webkit-details-marker{display:none}
 .kw summary i{position:relative;width:10px;height:10px;flex:0 0 10px;opacity:.65}
 .kw summary i::before,.kw summary i::after{content:"";position:absolute;background:currentColor}
 .kw summary i::before{left:0;top:4.5px;width:10px;height:1px}
 .kw summary i::after{left:4.5px;top:0;width:1px;height:10px;transition:transform .18s}
-.kw details[open] summary i::after{transform:scaleY(0)}
-.kw details[open] summary{font-weight:600}
 .kw details p{padding:0 18px 18px;margin:0;font-size:13px;color:var(--muted);line-height:1.6}
+
+.kw details[open]{z-index:6;background:#242628;color:#ecebe7;
+  --fg:#ecebe7;--muted:#b0b0ae;--muted-2:#8b8c8a;
+  --line:rgba(255,255,255,.21);--line-2:rgba(255,255,255,.42);
+  border-right-color:rgba(255,255,255,.18);border-bottom-color:transparent}
+.kw details[open] summary{font-weight:600}
+.kw details[open] summary:hover{background:transparent}
+.kw details[open] summary i{opacity:.85}
+.kw details[open] summary i::after{transform:scaleY(0)}
+.kw details[open] > p{position:absolute;left:-2px;right:-2px;top:100%;z-index:7;
+  background:#242628;border:1px solid rgba(255,255,255,.18);border-top:none;
+  box-shadow:0 10px 18px rgba(0,0,0,.42),0 26px 44px rgba(0,0,0,.38);
+  animation:kwIn .16s ease-out}
+.kw details[open].up > p{top:auto;bottom:100%;border-top:1px solid rgba(255,255,255,.18);
+  border-bottom:none;box-shadow:0 -10px 18px rgba(0,0,0,.42),0 -26px 44px rgba(0,0,0,.38)}
+@keyframes kwIn{from{opacity:.35}to{opacity:1}}
 @media(max-width:900px){
   .kw{grid-template-columns:repeat(2,1fr)}
   .bandpad{padding:52px 0}
@@ -656,7 +672,7 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 
 to{--ring:0deg}}
 .half .mark{z-index:2}
-.half{background:#000;overflow:hidden}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
+.half{background:var(--bg);overflow:hidden}   /* 门幕＝主题石墨灰（前任改成纯黑，与站点不搭）*/
 @media(max-width:900px){}
 
 /* 新颐元整体左移，平衡画面（原来贴在接缝上） */
@@ -666,7 +682,7 @@ to{--ring:0deg}}
 to{--ring:0deg}}
 }
 .half .mark{z-index:2}
-.half{background:#000;overflow:hidden}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
+.half{background:var(--bg);overflow:hidden}   /* 门幕＝主题石墨灰（前任改成纯黑，与站点不搭）*/
 
 /* 圆环在每扇门里各一份：画圈时跨缝无缝，开门时被门切成两半一起滑走 */
 .half.l .half.r 

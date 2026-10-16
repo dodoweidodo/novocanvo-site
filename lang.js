@@ -81,3 +81,46 @@
     .then(function (t) { clearTimeout(timer); var m = /loc=([A-Z]{2})/.exec(t); if (m && m[1] === 'CN') go(); })
     .catch(function () { clearTimeout(timer); });
 })();
+
+/* ---------- 产品页关键词条：一次只开一个；底行的解释朝上浮起 ----------
+   现代浏览器靠 <details name> 原生互斥，这段是兜底 + 定位。 */
+(function () {
+  var boxes = document.querySelectorAll('.kw details');
+  if (!boxes.length) return;
+  function closeOthers(cur) {
+    for (var i = 0; i < boxes.length; i++) if (boxes[i] !== cur && boxes[i].open) boxes[i].open = false;
+  }
+  function lastRow(cur) {                       /* 这一格是不是网格的最后一行 */
+    var top = Math.round(cur.getBoundingClientRect().top);
+    for (var i = 0; i < boxes.length; i++)
+      if (Math.round(boxes[i].getBoundingClientRect().top) > top + 2) return false;
+    return true;
+  }
+  function place(cur) {
+    var panel = cur.querySelector('p');
+    if (!panel) return;
+    cur.classList.remove('up');
+    if (!lastRow(cur)) return;                  /* 只有最后一行才考虑朝上开（否则会盖住上方标题） */
+    var sec = cur.closest('section') || document.body;
+    var limit = sec.getBoundingClientRect().bottom - 22;      /* 纸片下沿留一点余量 */
+    if (cur.getBoundingClientRect().bottom + panel.offsetHeight > limit) cur.classList.add('up');
+  }
+  for (var i = 0; i < boxes.length; i++) {
+    (function (d) {
+      d.addEventListener('toggle', function () {
+        if (!d.open) { d.classList.remove('up'); return; }
+        closeOthers(d);
+        place(d);
+      });
+      var panel = d.querySelector('p');                        /* 点解释文字＝关闭 */
+      if (panel) panel.addEventListener('click', function () { d.open = false; });
+    })(boxes[i]);
+  }
+  var t;
+  window.addEventListener('resize', function () {
+    clearTimeout(t);
+    t = setTimeout(function () {
+      for (var i = 0; i < boxes.length; i++) if (boxes[i].open) place(boxes[i]);
+    }, 150);
+  });
+})();
