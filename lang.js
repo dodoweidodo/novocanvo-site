@@ -179,9 +179,15 @@
   window.addEventListener('resize', function () { if (cur) build(cur); });
 })();
 
-/* ---------- 索取样品卡：弹窗（静态站没有后端，提交走邮件客户端；字段按用户要求）----------
-   触发：任何带 data-swatch 的元素（用事件委托，因为语言切换会重建 innerHTML） */
+/* ---------- 弹窗：① 索取样品卡（data-swatch）② 款号与价格咨询（data-enquiry）----------
+   两个弹窗共用一套机制（字段表驱动）。提交方式：
+     · 填了 WEB3FORMS_KEY → POST 到表单服务，访客点一下就完事（不依赖他的邮件客户端）
+     · 没填 → 退回生成邮件草稿（老路子），页面里也留邮箱直链
+   触发用事件委托，因为语言切换会重建 innerHTML。 */
 (function () {
+  var WEB3FORMS_KEY = '';                     /* ← 拿到 key 填这里即可切换成表单服务 */
+  var INBOX = 'sales@novocanvo.com';
+
   var COUNTRIES = [
     "United States|美国","Canada|加拿大","United Kingdom|英国","Ireland|爱尔兰","Germany|德国",
     "France|法国","Netherlands|荷兰","Belgium|比利时","Luxembourg|卢森堡","Spain|西班牙",
@@ -203,117 +209,156 @@
     "Panama|巴拿马","Guatemala|危地马拉","Dominican Republic|多米尼加","Russia|俄罗斯",
     "Ukraine|乌克兰","Belarus|白俄罗斯","Moldova|摩尔多瓦","Georgia|格鲁吉亚"
   ];
+
   var T = {
     en: {
-      title: "Request a swatch card",
-      lede: "An A5 swatch card, sent by courier. Tell us where it should go and how to reach you.",
+      swatchTitle: "Request a swatch card",
+      swatchLede: "An A5 swatch card, sent by courier. Tell us where it should go and how to reach you.",
+      enqTitle: "Grades and prices",
+      enqLede: "Tell us what you need — grades, widths, volumes — and how to reach you.",
       name: "Name", company: "Company (optional)", job: "Job title (optional)",
-      website: "Company website (optional)", country: "Country / region",
-      pick: "Select a country", address: "Full delivery address",
-      reach: "How can we reach you — any one is enough",
+      website: "Company website (optional)", country: "Country / region", pick: "Select a country",
+      address: "Full delivery address", reach: "How can we reach you — any one is enough",
       email: "Email", whatsapp: "WhatsApp", wechat: "WeChat", phone: "Phone",
-      interest: "Grades or widths of interest (optional)", notes: "Notes (optional)",
-      note: "Used only to send the sample and to reply to you. Not shared.",
-      send: "Prepare the request", cancel: "Cancel",
-      alt: "Or write to <a href=\"mailto:sales@novocanvo.com\">sales@novocanvo.com</a>",
+      interest: "Grades or widths of interest (optional)",
+      need: "What you need — grades, widths, volumes (optional)", notes: "Notes (optional)",
+      note: "Used only to reply to you. Not shared.", send: "Send", cancel: "Cancel",
+      alt: "Or write to", other: "Other",
       errReq: "Please fill in name, country and delivery address.",
+      errReq2: "Please fill in name and country.",
       errNeed: "Leave at least one way to reach you.",
+      sending: "Sending…",
+      ok: "Sent. We reply within one business day, Singapore time.",
+      fail: "Sending failed. Please write to sales@novocanvo.com instead.",
       done: "A draft has been handed to your mail app. If it did not open, send the same details to sales@novocanvo.com.",
-      other: "Other", subject: "Swatch card request"
+      subjectSwatch: "Swatch card request", subjectEnq: "Enquiry — grades and prices"
     },
     zh: {
-      title: "索取样品卡",
-      lede: "A5 样品卡，快递寄出。请写明寄送地址与联系方式。",
+      swatchTitle: "索取样品卡",
+      swatchLede: "A5 样品卡，快递寄出。请写明寄送地址与联系方式。",
+      enqTitle: "款号与价格咨询",
+      enqLede: "请写清需要的款号、幅宽与数量，以及联系方式。",
       name: "姓名", company: "公司（选填）", job: "职位（选填）",
-      website: "公司网站（选填）", country: "国家 / 地区",
-      pick: "请选择国家或地区", address: "详细收货地址",
-      reach: "联系方式——留一个即可",
+      website: "公司网站（选填）", country: "国家 / 地区", pick: "请选择国家或地区",
+      address: "详细收货地址", reach: "联系方式——留一个即可",
       email: "邮箱", whatsapp: "WhatsApp", wechat: "微信", phone: "电话",
-      interest: "感兴趣的款号或幅宽（选填）", notes: "备注（选填）",
-      note: "资料仅用于寄样与回复，不对外提供。",
-      send: "生成请求", cancel: "取消",
-      alt: "或直接发邮件到 <a href=\"mailto:sales@novocanvo.com\">sales@novocanvo.com</a>",
+      interest: "感兴趣的款号或幅宽（选填）",
+      need: "需要的款号、幅宽、数量（选填）", notes: "备注（选填）",
+      note: "资料仅用于回复，不对外提供。", send: "发送", cancel: "取消",
+      alt: "或直接发邮件到", other: "其他",
       errReq: "请填写姓名、国家/地区与收货地址。",
+      errReq2: "请填写姓名与国家/地区。",
       errNeed: "请至少留一种联系方式。",
+      sending: "正在发送…",
+      ok: "已收到。我们会在一个工作日内（新加坡时间）回复。",
+      fail: "发送失败，请直接把内容发到 sales@novocanvo.com。",
       done: "已交给邮件客户端。若没有自动打开，请把同样内容发到 sales@novocanvo.com。",
-      other: "其他", subject: "索取样品卡"
+      subjectSwatch: "索取样品卡", subjectEnq: "款号与价格咨询"
     }
   };
-  var box = null, lastTrigger = null;
 
-  function lang() { return (document.documentElement.getAttribute('data-lang') === 'zh') ? 'zh' : 'en'; }
+  /* 字段表：k = 标签键，n = 字段名，t = 类型，full = 占满一行 */
+  var BASE_HEAD = [
+    { k: 'name', n: 'name', ac: 'name' }, { k: 'company', n: 'company', ac: 'organization' },
+    { k: 'job', n: 'jobtitle', ac: 'organization-title' }, { k: 'website', n: 'website' },
+    { k: 'country', n: 'country', t: 'country', full: 1 }
+  ];
+  var CONTACT = [
+    { sep: 'reach' },
+    { k: 'email', n: 'email', t: 'email', ac: 'email' }, { k: 'whatsapp', n: 'whatsapp' },
+    { k: 'wechat', n: 'wechat' }, { k: 'phone', n: 'phone', ac: 'tel' }
+  ];
+  var KINDS = {
+    swatch: { title: 'swatchTitle', lede: 'swatchLede', subject: 'subjectSwatch',
+              req: ['name', 'country', 'address'], reqMsg: 'errReq',
+              fields: BASE_HEAD.concat([
+                { k: 'address', n: 'address', t: 'textarea', full: 1, req: 1 }], CONTACT, [
+                { k: 'interest', n: 'interest', full: 1 }, { k: 'notes', n: 'notes', t: 'textarea', full: 1 }]) },
+    enquiry: { title: 'enqTitle', lede: 'enqLede', subject: 'subjectEnq',
+               req: ['name', 'country'], reqMsg: 'errReq2',
+               fields: BASE_HEAD.concat(CONTACT, [
+                { k: 'need', n: 'need', t: 'textarea', full: 1 },
+                { k: 'notes', n: 'notes', t: 'textarea', full: 1 }]) }
+  };
+  var CONTACT_KEYS = ['email', 'whatsapp', 'wechat', 'phone'];
+
+  var box = null, lastTrigger = null, openKind = null;
+
+  function lang() { return document.documentElement.getAttribute('data-lang') === 'zh' ? 'zh' : 'en'; }
 
   function countryOptions(zh) {
     var out = '<option value="">' + T[zh].pick + '</option>';
     COUNTRIES.forEach(function (c) {
       var p = c.split('|');
-      var label = (zh === 'zh' ? p[1] + '　' + p[0] : p[0]);
-      out += '<option value="' + p[0] + '">' + label + '</option>';
+      out += '<option value="' + p[0] + '">' + (zh === 'zh' ? p[1] + '　' + p[0] : p[0]) + '</option>';
     });
-    out += '<option value="Other">' + T[zh].other + '</option>';
-    return out;
+    return out + '<option value="Other">' + T[zh].other + '</option>';
   }
 
-  function build(zh) {
-    var t = T[zh];
+  function fieldHTML(f, zh) {
+    var lbl = T[zh][f.k];
+    var input;
+    if (f.t === 'country') input = '<select name="' + f.n + '" autocomplete="country-name">' + countryOptions(zh) + '</select>';
+    else if (f.t === 'textarea') input = '<textarea name="' + f.n + '" rows="2"></textarea>';
+    else input = '<input name="' + f.n + '" type="' + (f.t || 'text') + '"' + (f.ac ? ' autocomplete="' + f.ac + '"' : '') + '>';
+    return '<label class="sw-field' + (f.full ? ' full' : '') + '"><span>' + lbl + '</span>' + input + '</label>';
+  }
+
+  function formHTML(kind, zh) {
+    var cfg = KINDS[kind], out = [], row = [];
+    function flush() { if (row.length) { out.push('<div class="sw-row">' + row.join('') + '</div>'); row = []; } }
+    cfg.fields.forEach(function (f) {
+      if (f.sep) { flush(); out.push('<p class="sw-sub">' + T[zh].reach + '</p>'); return; }
+      var html = fieldHTML(f, zh);
+      if (f.full) { flush(); out.push(html); } else { row.push(html); if (row.length === 2) flush(); }
+    });
+    flush();
+    return out.join('');
+  }
+
+  function build(kind, zh) {
+    var cfg = KINDS[kind];
     return '<div class="sw-scrim" data-sw-close></div>' +
-      '<div class="sw-card" role="dialog" aria-modal="true" aria-label="' + t.title + '">' +
-        '<div class="sw-head"><h3>' + t.title + '</h3>' +
+      '<div class="sw-card" role="dialog" aria-modal="true" aria-label="' + T[zh][cfg.title] + '">' +
+        '<div class="sw-head"><h3>' + T[zh][cfg.title] + '</h3>' +
           '<button class="sw-x" type="button" data-sw-close aria-label="Close">✕</button></div>' +
-        '<p class="sw-lede">' + t.lede + '</p>' +
-        '<form class="sw-form" novalidate>' +
-          '<div class="sw-row">' +
-            '<label class="sw-field"><span>' + t.name + '</span><input name="name" autocomplete="name"></label>' +
-            '<label class="sw-field"><span>' + t.company + '</span><input name="company" autocomplete="organization"></label>' +
-          '</div>' +
-          '<div class="sw-row">' +
-            '<label class="sw-field"><span>' + t.job + '</span><input name="jobtitle" autocomplete="organization-title"></label>' +
-            '<label class="sw-field"><span>' + t.website + '</span><input name="website" inputmode="url"></label>' +
-          '</div>' +
-          '<label class="sw-field"><span>' + t.country + '</span><select name="country">' + countryOptions(zh) + '</select></label>' +
-          '<label class="sw-field"><span>' + t.address + '</span><textarea name="address" rows="3"></textarea></label>' +
-          '<p class="sw-sub">' + t.reach + '</p>' +
-          '<div class="sw-row">' +
-            '<label class="sw-field"><span>' + t.email + '</span><input name="email" type="email" autocomplete="email"></label>' +
-            '<label class="sw-field"><span>' + t.whatsapp + '</span><input name="whatsapp"></label>' +
-          '</div>' +
-          '<div class="sw-row">' +
-            '<label class="sw-field"><span>' + t.wechat + '</span><input name="wechat"></label>' +
-            '<label class="sw-field"><span>' + t.phone + '</span><input name="phone" autocomplete="tel"></label>' +
-          '</div>' +
-          '<label class="sw-field"><span>' + t.interest + '</span><input name="interest"></label>' +
-          '<label class="sw-field"><span>' + t.notes + '</span><textarea name="notes" rows="2"></textarea></label>' +
-          '<p class="sw-note">' + t.note + '</p>' +
+        '<p class="sw-lede">' + T[zh][cfg.lede] + '</p>' +
+        '<form class="sw-form" novalidate data-kind="' + kind + '">' + formHTML(kind, zh) +
+          '<p class="sw-note">' + T[zh].note + '</p>' +
           '<p class="sw-err" hidden></p>' +
           '<div class="sw-actions">' +
-            '<button class="sw-btn" type="submit">' + t.send + '</button>' +
-            '<button class="sw-btn ghost" type="button" data-sw-close>' + t.cancel + '</button>' +
+            '<button class="sw-btn" type="submit">' + T[zh].send + '</button>' +
+            '<button class="sw-btn ghost" type="button" data-sw-close>' + T[zh].cancel + '</button>' +
           '</div>' +
-          '<p class="sw-alt">' + t.alt + '</p>' +
+          '<p class="sw-alt">' + T[zh].alt + ' <a href="mailto:' + INBOX + '">' + INBOX + '</a></p>' +
         '</form>' +
       '</div>';
   }
 
-  function openModal() {
+  function open_(kind, trigger) {
     var zh = lang();
+    lastTrigger = trigger;
     if (!box) {
       box = document.createElement('div');
       box.className = 'sw-modal';
       box.hidden = true;
       document.body.appendChild(box);
       box.addEventListener('click', function (e) {
-        if (e.target.closest && e.target.closest('[data-sw-close]')) closeModal();
+        if (e.target.closest && e.target.closest('[data-sw-close]')) close_();
       });
-      box.addEventListener('submit', function (e) { if (e.target.tagName === 'FORM') { e.preventDefault(); submit(e.target); } });
+      box.addEventListener('submit', function (e) {
+        if (e.target.tagName === 'FORM') { e.preventDefault(); send(e.target); }
+      });
     }
-    box.innerHTML = build(zh);
+    openKind = kind;
+    box.innerHTML = build(kind, zh);
     box.hidden = false;
     document.body.classList.add('sw-open');
     var first = box.querySelector('input,select,textarea');
     if (first) first.focus();
   }
 
-  function closeModal() {
+  function close_() {
     if (!box || box.hidden) return;
     box.hidden = true;
     box.innerHTML = '';
@@ -323,47 +368,78 @@
 
   function val(f, n) { var el = f.elements[n]; return el ? String(el.value || '').trim() : ''; }
 
-  function submit(f) {
-    var zh = lang(), t = T[zh], err = box.querySelector('.sw-err');
-    var need = ['name', 'country', 'address'].filter(function (n) { return !val(f, n); });
-    if (need.length) { err.textContent = t.errReq; err.hidden = false; return; }
-    var ways = ['email', 'whatsapp', 'wechat', 'phone'].filter(function (n) { return val(f, n); });
-    if (!ways.length) { err.textContent = t.errNeed; err.hidden = false; return; }
+  function clean(s) { return String(s).replace(/\s*\(optional\)/, '').replace(/\s*（选填）/, ''); }
+
+  function lines(f, kind, zh) {
+    var L = [];
+    [['name', 'name'], ['company', 'company'], ['jobtitle', 'job'], ['website', 'website'], ['country', 'country']].forEach(function (p) {
+      if (f.elements[p[0]]) L.push(clean(T[zh][p[1]]) + ': ' + (val(f, p[0]) || '-'));
+    });
+    if (f.elements.address) L.push(T[zh].address + ': ' + (val(f, 'address') || '-'));
+    if (f.elements.need) L.push(T[zh].need + ': ' + (val(f, 'need') || '-'));
+    if (f.elements.interest) L.push(T[zh].interest + ': ' + (val(f, 'interest') || '-'));
+    L.push('');
+    CONTACT_KEYS.forEach(function (n) { if (f.elements[n]) L.push(T[zh][n] + ': ' + (val(f, n) || '-')); });
+    if (f.elements.notes) { L.push(''); L.push(T[zh].notes + ': ' + (val(f, 'notes') || '-')); }
+    return L;
+  }
+
+  function payload(f, kind, zh) {
+    var d = { subject: T[zh][KINDS[kind].subject], body: lines(f, kind, zh) };
+    KINDS[kind].fields.forEach(function (x) { if (x.n) d[x.n] = val(f, x.n); });
+    return d;
+  }
+
+  function send(f) {
+    var kind = f.getAttribute('data-kind'), zh = lang(), t = T[zh], cfg = KINDS[kind];
+    var err = box.querySelector('.sw-err');
+    var missing = cfg.req.filter(function (n) { return !val(f, n); });
+    if (missing.length) { err.textContent = t[cfg.reqMsg]; err.hidden = false; return; }
+    if (!CONTACT_KEYS.some(function (n) { return val(f, n); })) { err.textContent = t.errNeed; err.hidden = false; return; }
     err.hidden = true;
-    var lines = [
-      (zh === 'zh' ? '姓名' : 'Name') + ': ' + val(f, 'name'),
-      (zh === 'zh' ? '公司' : 'Company') + ': ' + (val(f, 'company') || '-'),
-      (zh === 'zh' ? '职位' : 'Job title') + ': ' + (val(f, 'jobtitle') || '-'),
-      (zh === 'zh' ? '公司网站' : 'Website') + ': ' + (val(f, 'website') || '-'),
-      (zh === 'zh' ? '国家/地区' : 'Country') + ': ' + val(f, 'country'),
-      (zh === 'zh' ? '收货地址' : 'Delivery address') + ': ' + val(f, 'address'),
-      '',
-      'Email: ' + (val(f, 'email') || '-'),
-      'WhatsApp: ' + (val(f, 'whatsapp') || '-'),
-      (zh === 'zh' ? '微信' : 'WeChat') + ': ' + (val(f, 'wechat') || '-'),
-      (zh === 'zh' ? '电话' : 'Phone') + ': ' + (val(f, 'phone') || '-'),
-      '',
-      (zh === 'zh' ? '感兴趣' : 'Interested in') + ': ' + (val(f, 'interest') || '-'),
-      (zh === 'zh' ? '备注' : 'Notes') + ': ' + (val(f, 'notes') || '-')
-    ];
-    var href = 'mailto:sales@novocanvo.com?subject=' +
-      encodeURIComponent(t.subject + ' — ' + val(f, 'country')) +
-      '&body=' + encodeURIComponent(lines.join('\n'));
-    box.setAttribute('data-last-mailto', href);   /* 便于机检：记录最后生成的 mailto */
-    window.location.href = href;
+    var d = payload(f, kind, zh);
     var note = box.querySelector('.sw-note');
+
+    if (WEB3FORMS_KEY) {                                   /* 表单服务：点一下就走 */
+      var btn = box.querySelector('.sw-btn');
+      btn.disabled = true; btn.textContent = t.sending;
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY, subject: d.subject, from_name: 'novocanvo.com',
+          botcheck: false, page: location.href,
+          name: d.name, company: d.company, jobtitle: d.jobtitle, website: d.website,
+          country: d.country, address: d.address, need: d.need, interest: d.interest,
+          email: d.email, whatsapp: d.whatsapp, wechat: d.wechat, phone: d.phone,
+          notes: d.notes, summary: d.body.join('\n')
+        })
+      }).then(function (r) { return r.json(); }).then(function (j) {
+        if (j && j.success) {
+          box.querySelector('.sw-form').innerHTML = '<p class="sw-done">' + t.ok + '</p>' +
+            '<div class="sw-actions"><button class="sw-btn ghost" type="button" data-sw-close>' + t.cancel + '</button></div>';
+        } else { throw new Error('not success'); }
+      }).catch(function () {
+        btn.disabled = false; btn.textContent = t.send;
+        note.textContent = t.fail; note.style.color = '#8a2b22';
+      });
+      return;
+    }
+
+    var href = 'mailto:' + INBOX + '?subject=' + encodeURIComponent(d.subject) + '&body=' + encodeURIComponent(d.body.join('\n'));
+    box.setAttribute('data-last-mailto', href);
+    window.location.href = href;
     note.textContent = t.done;
     note.style.color = '#1b1c1d';
   }
 
   document.addEventListener('click', function (e) {
-    var trg = e.target && e.target.closest ? e.target.closest('[data-swatch]') : null;
-    if (!trg) return;
+    if (!e.target || !e.target.closest) return;
+    var sw = e.target.closest('[data-swatch]'), en = e.target.closest('[data-enquiry]');
+    if (!sw && !en) return;
     e.preventDefault();
-    lastTrigger = trg;
-    openModal();
+    open_(sw ? 'swatch' : 'enquiry', sw || en);
   });
   document.addEventListener('keydown', function (e) {
-    if ((e.key === 'Escape' || e.keyCode === 27) && box && !box.hidden) closeModal();
+    if ((e.key === 'Escape' || e.keyCode === 27) && box && !box.hidden) close_();
   });
 })();
