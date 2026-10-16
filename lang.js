@@ -402,6 +402,7 @@
     if (!CONTACT_KEYS.some(function (n) { return val(f, n); })) { err.textContent = t.errNeed; err.hidden = false; return; }
     err.hidden = true;
     var d = payload(f, kind, zh);
+    d.subject = '[novocanvo.com] ' + d.subject;   /* 统一前缀，便于收信时一眼认出/过滤 */
     var note = box.querySelector('.sw-note');
 
     var wk = WEB3FORMS_KEYS[kind] || '';
@@ -411,7 +412,7 @@
       fetch('https://api.web3forms.com/submit', {
         method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          access_key: wk, subject: d.subject, from_name: 'novocanvo.com',
+          access_key: wk, subject: d.subject,                       /* 显示名走后台 Sender Name */
           /* replyto：让对方填的邮箱直接成为回信地址，我们点"回复"即可 */
           replyto: d.email || '',
           botcheck: false, page: location.href,
