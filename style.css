@@ -646,18 +646,15 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 .half.l 
 .half.r 
 .half .mark{z-index:2}
-.half{overflow:hidden}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
+   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
 
 
 
 
-/* ---------- 开场笔刷 v4：按手绘稿（字在前、起笔重、收笔拖尖） ---------- */
 
 
-/* ---------- 开场笔刷：用生成图 + conic 遮罩逆时针扫出 ---------- */
-@property --ring{syntax:'<angle>';initial-value:360deg;inherits:false}
 
-@keyframes ringdraw{from{--ring:360deg}to{--ring:0deg}}
+to{--ring:0deg}}
 .half .mark{z-index:2}
 .half{background:#000;overflow:hidden}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
 @media(max-width:900px){}
@@ -665,19 +662,13 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 /* 新颐元整体左移，平衡画面（原来贴在接缝上） */
 .half.l .mark.zh{right:38px}
 
-/* ---------- 开场笔刷：单层不裁 + 遮罩软边 + 开门前淡出 ---------- */
 
-@keyframes ringdraw{from{--ring:360deg}to{--ring:0deg}}
-@keyframes ringout{to{opacity:0}}
+to{--ring:0deg}}
+}
 .half .mark{z-index:2}
 .half{background:#000;overflow:hidden}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
 
 /* 圆环在每扇门里各一份：画圈时跨缝无缝，开门时被门切成两半一起滑走 */
-.brush{position:absolute;top:0;height:100%;width:200%;z-index:1;pointer-events:none;
-  background:url(images/brush-ring.png) center/auto 78% no-repeat;opacity:.96}
-.half.l .brush{left:0}
-.half.r .brush{left:-100%}
-
+.half.l .half.r 
 /* 保证文字在笔迹之上（放在最后，避免被前面的规则覆盖） */
-.intro .half .mark{z-index:3 !important}
-.intro .brush{z-index:1 !important}
+.intro 
