@@ -3,6 +3,17 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 
+/* ---------- 数字：只把 0-9 换成"齐线数字"字体 ----------
+   Georgia 的 0-9 是旧式数字（3/4 下沉、8 上浮），会让价格/克重/幅宽看起来"上上下下"。
+   这里用 unicode-range 限定这个字体面只吃数字，字母仍走 Georgia/衬线 —— 全站一处生效，
+   不用再逐个元素挂 font-family（漏一个就又不齐）。Cambria 是 Windows 上的首选，Mac 上回落到
+   Times New Roman（同样齐线）。 */
+@font-face{
+  font-family:"NumLining";
+  src:local("Cambria"),local("Times New Roman"),local("Liberation Serif"),local("DejaVu Serif");
+  unicode-range:U+0030-0039;
+}
+
 :root{
   --bg:#242628;
   --bg-2:#2b2d30;
@@ -12,7 +23,7 @@
   --fg:#ecebe7;
   --muted:#b0b0ae;
   --muted-2:#8b8c8a;
-  --serif:Georgia,"Iowan Old Style","Palatino Linotype","Book Antiqua",serif;
+  --serif:"NumLining",Georgia,"Iowan Old Style","Palatino Linotype","Book Antiqua",serif;
   --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
 }
 html[data-theme="paper"]{
@@ -593,12 +604,16 @@ html[data-lang="zh"] [data-zh].impact{letter-spacing:.06em}
 html[data-lang="zh"] .langbtn{letter-spacing:normal}
 .brand{letter-spacing:.17em}
 
-/* ---------- 数字用"齐线数字"字体（Georgia 是旧式数字，3/4 会下沉、8 上浮） ---------- */
+/* ---------- 这几处整块都用 Cambria（小号正文里的数字密集区）；其余靠 --serif 的 NumLining ---------- */
 .sells b,.spec td,.chips b,.facts b,.rmeta,.badge,.fine,.cap,.step .n,.pcard h3,.row .rn{
   font-family:Cambria,"Palatino Linotype","Book Antiqua",Georgia,serif;
   font-variant-numeric:lining-nums;
   font-feature-settings:"lnum" 1;
 }
+
+/* ---------- 选型表（products）：型号名一栏统一字体与字色 ---------- */
+.pick td:first-child{color:var(--fg)}
+.pick td:last-child{font-family:var(--serif);font-size:17px;color:var(--fg)}
 
 /* ---------- 通栏背景图（替代斜线占位） ---------- */
 .band-full .ph-fade.bgimg{background-size:cover;background-position:36% 42%;
