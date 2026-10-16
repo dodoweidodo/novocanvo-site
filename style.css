@@ -362,8 +362,8 @@ html[data-theme="paper"] .ph::before{
 .half.l .mark{right:0;text-align:right}
 .half.l .mark.en{margin-right:-.2em}
 .half.r .mark{left:0;margin-left:0}
-.half .en{animation:introIn .8s ease, introOut .55s ease forwards;animation-delay:0s,1.15s}
-.half .alt{opacity:0;animation:introSwap .8s ease forwards;animation-delay:1.55s}
+.half .en{animation:introIn .8s ease, introOut .55s ease forwards;animation-delay:0s,1.5s}   /* 换字：起笔之后、完笔之前 */
+.half .alt{opacity:0;animation:introSwap .8s ease forwards;animation-delay:1.9s}
 .intro.skip .half .mark{animation-delay:0s,0s}
 .half.l .zh{--shift:-15px}
 .half.r .alt{--shift:13px}
@@ -659,7 +659,7 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 .half{overflow:hidden}
 .brush{position:absolute;top:0;height:100%;width:200%;z-index:1;pointer-events:none;
   background:url(images/brush-ring.png) center/contain no-repeat;
-  filter:grayscale(1) brightness(1.04) contrast(1.03);
+  mix-blend-mode:screen;
   opacity:.94;--ring:360deg;
   -webkit-mask-image:conic-gradient(from 45deg, transparent 0deg var(--ring), #000 var(--ring) 360deg);
           mask-image:conic-gradient(from 45deg, transparent 0deg var(--ring), #000 var(--ring) 360deg);
