@@ -151,7 +151,19 @@
     clearTimeout(hideT);
     hideT = setTimeout(function () { card.hidden = true; }, 180);
   }
+  var hasBefore = ('onbeforetoggle' in document.createElement('details'));
   boxes.forEach(function (d) {
+    /* 关键：在浏览器真正切换 open **之前**就把格子里的解释藏掉，
+       否则会有一帧"被撑高"的布局跳动（下面那一节会先被顶下去再弹回来） */
+    if (hasBefore) {
+      d.addEventListener('beforetoggle', function (e) {
+        if (e.newState === 'open') d.classList.add('open-kw');
+      });
+    }
+    var sm = d.querySelector('summary');
+    if (sm) sm.addEventListener('click', function () {        /* 老浏览器兜底（click 早于默认动作） */
+      if (!d.open) d.classList.add('open-kw');
+    });
     d.addEventListener('toggle', function () {
       if (d.open) {
         boxes.forEach(function (o) { if (o !== d && o.open) o.open = false; });
