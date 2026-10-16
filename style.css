@@ -658,7 +658,7 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 @property --ring{syntax:'<angle>';initial-value:360deg;inherits:false}
 .half{overflow:hidden}
 .brush{position:absolute;top:0;height:100%;width:200%;z-index:1;pointer-events:none;
-  background:url(images/brush-ring.png) center/contain no-repeat;
+  background:url(images/brush-ring.png) center/86% no-repeat;
   mix-blend-mode:screen;
   opacity:.94;--ring:360deg;
   -webkit-mask-image:conic-gradient(from 45deg, transparent 0deg var(--ring), #000 var(--ring) 360deg);
@@ -667,3 +667,6 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 @keyframes ringdraw{from{--ring:360deg}to{--ring:0deg}}
 .half .mark{z-index:2}
 @media(max-width:900px){.brush{background-size:auto 78%}}
+
+/* 新颐元整体左移，平衡画面（原来贴在接缝上） */
+.half.l .mark.zh{right:38px}
