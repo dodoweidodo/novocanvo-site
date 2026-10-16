@@ -178,3 +178,184 @@
   });
   window.addEventListener('resize', function () { if (cur) build(cur); });
 })();
+
+/* ---------- 索取样品卡：弹窗（静态站没有后端，提交走邮件客户端；字段按用户要求）----------
+   触发：任何带 data-swatch 的元素（用事件委托，因为语言切换会重建 innerHTML） */
+(function () {
+  var COUNTRIES = [
+    "United States|美国","Canada|加拿大","United Kingdom|英国","Ireland|爱尔兰","Germany|德国",
+    "France|法国","Netherlands|荷兰","Belgium|比利时","Luxembourg|卢森堡","Spain|西班牙",
+    "Portugal|葡萄牙","Italy|意大利","Switzerland|瑞士","Austria|奥地利","Sweden|瑞典",
+    "Norway|挪威","Denmark|丹麦","Finland|芬兰","Iceland|冰岛","Poland|波兰","Czechia|捷克",
+    "Slovakia|斯洛伐克","Hungary|匈牙利","Romania|罗马尼亚","Bulgaria|保加利亚","Greece|希腊",
+    "Croatia|克罗地亚","Serbia|塞尔维亚","Slovenia|斯洛文尼亚","Estonia|爱沙尼亚",
+    "Latvia|拉脱维亚","Lithuania|立陶宛","Türkiye|土耳其","Israel|以色列",
+    "United Arab Emirates|阿联酋","Saudi Arabia|沙特阿拉伯","Qatar|卡塔尔","Kuwait|科威特",
+    "Oman|阿曼","Jordan|约旦","Lebanon|黎巴嫩","Egypt|埃及","Morocco|摩洛哥","Tunisia|突尼斯",
+    "South Africa|南非","Nigeria|尼日利亚","Kenya|肯尼亚","Ghana|加纳","Ethiopia|埃塞俄比亚",
+    "China|中国","Hong Kong SAR|中国香港","Macao SAR|中国澳门","Taiwan|中国台湾","Japan|日本",
+    "South Korea|韩国","Singapore|新加坡","Malaysia|马来西亚","Thailand|泰国","Vietnam|越南",
+    "Philippines|菲律宾","Indonesia|印度尼西亚","India|印度","Pakistan|巴基斯坦",
+    "Bangladesh|孟加拉国","Sri Lanka|斯里兰卡","Nepal|尼泊尔","Kazakhstan|哈萨克斯坦",
+    "Uzbekistan|乌兹别克斯坦","Australia|澳大利亚","New Zealand|新西兰","Mexico|墨西哥",
+    "Brazil|巴西","Argentina|阿根廷","Chile|智利","Colombia|哥伦比亚","Peru|秘鲁",
+    "Uruguay|乌拉圭","Ecuador|厄瓜多尔","Bolivia|玻利维亚","Paraguay|巴拉圭","Costa Rica|哥斯达黎加",
+    "Panama|巴拿马","Guatemala|危地马拉","Dominican Republic|多米尼加","Russia|俄罗斯",
+    "Ukraine|乌克兰","Belarus|白俄罗斯","Moldova|摩尔多瓦","Georgia|格鲁吉亚"
+  ];
+  var T = {
+    en: {
+      title: "Request a swatch card",
+      lede: "An A5 swatch card, sent by courier. Tell us where it should go and how to reach you.",
+      name: "Name", company: "Company (optional)", country: "Country / region",
+      pick: "Select a country", address: "Full delivery address",
+      reach: "How can we reach you — any one is enough",
+      email: "Email", whatsapp: "WhatsApp", wechat: "WeChat", phone: "Phone",
+      interest: "Grades or widths of interest (optional)", notes: "Notes (optional)",
+      note: "Used only to send the sample and to reply to you. Not shared.",
+      send: "Prepare the request", cancel: "Cancel",
+      alt: "Or write to <a href=\"mailto:sales@novocanvo.com\">sales@novocanvo.com</a>",
+      errReq: "Please fill in name, country and delivery address.",
+      errNeed: "Leave at least one way to reach you.",
+      done: "A draft has been handed to your mail app. If it did not open, send the same details to sales@novocanvo.com.",
+      other: "Other", subject: "Swatch card request"
+    },
+    zh: {
+      title: "索取样品卡",
+      lede: "A5 样品卡，快递寄出。请写明寄送地址与联系方式。",
+      name: "姓名", company: "公司（选填）", country: "国家 / 地区",
+      pick: "请选择国家或地区", address: "详细收货地址",
+      reach: "联系方式——留一个即可",
+      email: "邮箱", whatsapp: "WhatsApp", wechat: "微信", phone: "电话",
+      interest: "感兴趣的款号或幅宽（选填）", notes: "备注（选填）",
+      note: "资料仅用于寄样与回复，不对外提供。",
+      send: "生成请求", cancel: "取消",
+      alt: "或直接发邮件到 <a href=\"mailto:sales@novocanvo.com\">sales@novocanvo.com</a>",
+      errReq: "请填写姓名、国家/地区与收货地址。",
+      errNeed: "请至少留一种联系方式。",
+      done: "已交给邮件客户端。若没有自动打开，请把同样内容发到 sales@novocanvo.com。",
+      other: "其他", subject: "索取样品卡"
+    }
+  };
+  var box = null, lastTrigger = null;
+
+  function lang() { return (document.documentElement.getAttribute('data-lang') === 'zh') ? 'zh' : 'en'; }
+
+  function countryOptions(zh) {
+    var out = '<option value="">' + T[zh].pick + '</option>';
+    COUNTRIES.forEach(function (c) {
+      var p = c.split('|');
+      var label = (zh === 'zh' ? p[1] + '　' + p[0] : p[0]);
+      out += '<option value="' + p[0] + '">' + label + '</option>';
+    });
+    out += '<option value="Other">' + T[zh].other + '</option>';
+    return out;
+  }
+
+  function build(zh) {
+    var t = T[zh];
+    return '<div class="sw-scrim" data-sw-close></div>' +
+      '<div class="sw-card" role="dialog" aria-modal="true" aria-label="' + t.title + '">' +
+        '<div class="sw-head"><h3>' + t.title + '</h3>' +
+          '<button class="sw-x" type="button" data-sw-close aria-label="Close">✕</button></div>' +
+        '<p class="sw-lede">' + t.lede + '</p>' +
+        '<form class="sw-form" novalidate>' +
+          '<div class="sw-row">' +
+            '<label class="sw-field"><span>' + t.name + '</span><input name="name" autocomplete="name"></label>' +
+            '<label class="sw-field"><span>' + t.company + '</span><input name="company" autocomplete="organization"></label>' +
+          '</div>' +
+          '<label class="sw-field"><span>' + t.country + '</span><select name="country">' + countryOptions(zh) + '</select></label>' +
+          '<label class="sw-field"><span>' + t.address + '</span><textarea name="address" rows="3"></textarea></label>' +
+          '<p class="sw-sub">' + t.reach + '</p>' +
+          '<div class="sw-row">' +
+            '<label class="sw-field"><span>' + t.email + '</span><input name="email" type="email" autocomplete="email"></label>' +
+            '<label class="sw-field"><span>' + t.whatsapp + '</span><input name="whatsapp"></label>' +
+          '</div>' +
+          '<div class="sw-row">' +
+            '<label class="sw-field"><span>' + t.wechat + '</span><input name="wechat"></label>' +
+            '<label class="sw-field"><span>' + t.phone + '</span><input name="phone" autocomplete="tel"></label>' +
+          '</div>' +
+          '<label class="sw-field"><span>' + t.interest + '</span><input name="interest"></label>' +
+          '<label class="sw-field"><span>' + t.notes + '</span><textarea name="notes" rows="2"></textarea></label>' +
+          '<p class="sw-note">' + t.note + '</p>' +
+          '<p class="sw-err" hidden></p>' +
+          '<div class="sw-actions">' +
+            '<button class="sw-btn" type="submit">' + t.send + '</button>' +
+            '<button class="sw-btn ghost" type="button" data-sw-close>' + t.cancel + '</button>' +
+          '</div>' +
+          '<p class="sw-alt">' + t.alt + '</p>' +
+        '</form>' +
+      '</div>';
+  }
+
+  function openModal() {
+    var zh = lang();
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'sw-modal';
+      box.hidden = true;
+      document.body.appendChild(box);
+      box.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('[data-sw-close]')) closeModal();
+      });
+      box.addEventListener('submit', function (e) { if (e.target.tagName === 'FORM') { e.preventDefault(); submit(e.target); } });
+    }
+    box.innerHTML = build(zh);
+    box.hidden = false;
+    document.body.classList.add('sw-open');
+    var first = box.querySelector('input,select,textarea');
+    if (first) first.focus();
+  }
+
+  function closeModal() {
+    if (!box || box.hidden) return;
+    box.hidden = true;
+    box.innerHTML = '';
+    document.body.classList.remove('sw-open');
+    if (lastTrigger && lastTrigger.focus) lastTrigger.focus();
+  }
+
+  function val(f, n) { var el = f.elements[n]; return el ? String(el.value || '').trim() : ''; }
+
+  function submit(f) {
+    var zh = lang(), t = T[zh], err = box.querySelector('.sw-err');
+    var need = ['name', 'country', 'address'].filter(function (n) { return !val(f, n); });
+    if (need.length) { err.textContent = t.errReq; err.hidden = false; return; }
+    var ways = ['email', 'whatsapp', 'wechat', 'phone'].filter(function (n) { return val(f, n); });
+    if (!ways.length) { err.textContent = t.errNeed; err.hidden = false; return; }
+    err.hidden = true;
+    var lines = [
+      (zh === 'zh' ? '姓名' : 'Name') + ': ' + val(f, 'name'),
+      (zh === 'zh' ? '公司' : 'Company') + ': ' + (val(f, 'company') || '-'),
+      (zh === 'zh' ? '国家/地区' : 'Country') + ': ' + val(f, 'country'),
+      (zh === 'zh' ? '收货地址' : 'Delivery address') + ': ' + val(f, 'address'),
+      '',
+      'Email: ' + (val(f, 'email') || '-'),
+      'WhatsApp: ' + (val(f, 'whatsapp') || '-'),
+      (zh === 'zh' ? '微信' : 'WeChat') + ': ' + (val(f, 'wechat') || '-'),
+      (zh === 'zh' ? '电话' : 'Phone') + ': ' + (val(f, 'phone') || '-'),
+      '',
+      (zh === 'zh' ? '感兴趣' : 'Interested in') + ': ' + (val(f, 'interest') || '-'),
+      (zh === 'zh' ? '备注' : 'Notes') + ': ' + (val(f, 'notes') || '-')
+    ];
+    var href = 'mailto:sales@novocanvo.com?subject=' +
+      encodeURIComponent(t.subject + ' — ' + val(f, 'country')) +
+      '&body=' + encodeURIComponent(lines.join('\n'));
+    box.setAttribute('data-last-mailto', href);   /* 便于机检：记录最后生成的 mailto */
+    window.location.href = href;
+    var note = box.querySelector('.sw-note');
+    note.textContent = t.done;
+    note.style.color = '#1b1c1d';
+  }
+
+  document.addEventListener('click', function (e) {
+    var trg = e.target && e.target.closest ? e.target.closest('[data-swatch]') : null;
+    if (!trg) return;
+    e.preventDefault();
+    lastTrigger = trg;
+    openModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if ((e.key === 'Escape' || e.keyCode === 27) && box && !box.hidden) closeModal();
+  });
+})();
