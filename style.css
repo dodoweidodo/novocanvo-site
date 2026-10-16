@@ -565,7 +565,8 @@ html[data-lang="zh"] [data-zh].impact{letter-spacing:.06em}
 /* ---------- nav logo：CANVO 用反白块（框内填字色、字用底色） ---------- */
 .brand b{background:var(--fg);color:var(--bg);font-weight:400;
   padding:.06em .30em .14em;margin-left:.14em;letter-spacing:.1em}
-html[data-lang="zh"] .brand,.langbtn{letter-spacing:normal}
+html[data-lang="zh"] .langbtn{letter-spacing:normal}
+.brand{letter-spacing:.17em}
 
 /* ---------- 数字用"齐线数字"字体（Georgia 是旧式数字，3/4 会下沉、8 上浮） ---------- */
 .sells b,.spec td,.chips b,.facts b,.rmeta,.badge,.fine,.cap,.step .n,.pcard h3,.row .rn{
