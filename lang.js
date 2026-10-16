@@ -207,7 +207,8 @@
     en: {
       title: "Request a swatch card",
       lede: "An A5 swatch card, sent by courier. Tell us where it should go and how to reach you.",
-      name: "Name", company: "Company (optional)", country: "Country / region",
+      name: "Name", company: "Company (optional)", job: "Job title (optional)",
+      website: "Company website (optional)", country: "Country / region",
       pick: "Select a country", address: "Full delivery address",
       reach: "How can we reach you — any one is enough",
       email: "Email", whatsapp: "WhatsApp", wechat: "WeChat", phone: "Phone",
@@ -223,7 +224,8 @@
     zh: {
       title: "索取样品卡",
       lede: "A5 样品卡，快递寄出。请写明寄送地址与联系方式。",
-      name: "姓名", company: "公司（选填）", country: "国家 / 地区",
+      name: "姓名", company: "公司（选填）", job: "职位（选填）",
+      website: "公司网站（选填）", country: "国家 / 地区",
       pick: "请选择国家或地区", address: "详细收货地址",
       reach: "联系方式——留一个即可",
       email: "邮箱", whatsapp: "WhatsApp", wechat: "微信", phone: "电话",
@@ -263,6 +265,10 @@
           '<div class="sw-row">' +
             '<label class="sw-field"><span>' + t.name + '</span><input name="name" autocomplete="name"></label>' +
             '<label class="sw-field"><span>' + t.company + '</span><input name="company" autocomplete="organization"></label>' +
+          '</div>' +
+          '<div class="sw-row">' +
+            '<label class="sw-field"><span>' + t.job + '</span><input name="jobtitle" autocomplete="organization-title"></label>' +
+            '<label class="sw-field"><span>' + t.website + '</span><input name="website" inputmode="url"></label>' +
           '</div>' +
           '<label class="sw-field"><span>' + t.country + '</span><select name="country">' + countryOptions(zh) + '</select></label>' +
           '<label class="sw-field"><span>' + t.address + '</span><textarea name="address" rows="3"></textarea></label>' +
@@ -327,6 +333,8 @@
     var lines = [
       (zh === 'zh' ? '姓名' : 'Name') + ': ' + val(f, 'name'),
       (zh === 'zh' ? '公司' : 'Company') + ': ' + (val(f, 'company') || '-'),
+      (zh === 'zh' ? '职位' : 'Job title') + ': ' + (val(f, 'jobtitle') || '-'),
+      (zh === 'zh' ? '公司网站' : 'Website') + ': ' + (val(f, 'website') || '-'),
       (zh === 'zh' ? '国家/地区' : 'Country') + ': ' + val(f, 'country'),
       (zh === 'zh' ? '收货地址' : 'Delivery address') + ': ' + val(f, 'address'),
       '',
