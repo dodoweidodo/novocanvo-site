@@ -82,45 +82,88 @@
     .catch(function () { clearTimeout(timer); });
 })();
 
-/* ---------- 产品页关键词条：一次只开一个；底行的解释朝上浮起 ----------
-   现代浏览器靠 <details name> 原生互斥，这段是兜底 + 定位。 */
+/* ---------- 产品页关键词条：一次只开一个；点开的格子原地浮起一张独立卡片 ----------
+   卡片是一整个盒子（标题 + 解释），所以不存在"格子与展开之间的缝/宽度不一"；
+   格子本身留在网格里不动 → 行不被撑高、网格不重排。
+   现代浏览器靠 <details name> 原生互斥，这段负责卡片 + 兜底。 */
 (function () {
-  var boxes = document.querySelectorAll('.kw details');
+  var kw = document.querySelector('.kw');
+  if (!kw) return;
+  var boxes = [].slice.call(kw.querySelectorAll('details'));
   if (!boxes.length) return;
-  function closeOthers(cur) {
-    for (var i = 0; i < boxes.length; i++) if (boxes[i] !== cur && boxes[i].open) boxes[i].open = false;
+
+  var card = document.createElement('div');
+  card.className = 'kwcard';
+  card.hidden = true;
+  kw.appendChild(card);
+  var cur = null, hideT = null;
+
+  function kwOffset() {                 /* 绝对定位的参照是 .kw 的 padding box，要扣掉它自己的边框 */
+    var cs = getComputedStyle(kw);
+    return { l: parseFloat(cs.borderLeftWidth) || 0, t: parseFloat(cs.borderTopWidth) || 0 };
   }
-  function lastRow(cur) {                       /* 这一格是不是网格的最后一行 */
-    var top = Math.round(cur.getBoundingClientRect().top);
+  function rectIn(el) {
+    var a = el.getBoundingClientRect(), b = kw.getBoundingClientRect(), o = kwOffset();
+    return { left: a.left - b.left - o.l, top: a.top - b.top - o.t, width: a.width,
+             bottom: a.bottom - b.top - o.t };
+  }
+  function lastRow(d) {
+    var top = Math.round(d.getBoundingClientRect().top);
     for (var i = 0; i < boxes.length; i++)
       if (Math.round(boxes[i].getBoundingClientRect().top) > top + 2) return false;
     return true;
   }
-  function place(cur) {
-    var panel = cur.querySelector('p');
-    if (!panel) return;
-    cur.classList.remove('up');
-    if (!lastRow(cur)) return;                  /* 只有最后一行才考虑朝上开（否则会盖住上方标题） */
-    var sec = cur.closest('section') || document.body;
-    var limit = sec.getBoundingClientRect().bottom - 22;      /* 纸片下沿留一点余量 */
-    if (cur.getBoundingClientRect().bottom + panel.offsetHeight > limit) cur.classList.add('up');
+  function place(d) {
+    var s = d.querySelector('summary'), p = d.querySelector('p');
+    card.innerHTML = '<div class="kwhead">' + (s ? s.innerHTML : '') + '</div>' + (p ? p.outerHTML : '');
+    var cell = rectIn(d);
+    card.style.left = cell.left + 'px';
+    card.style.width = cell.width + 'px';
+    card.style.top = cell.top + 'px';
+    card.style.bottom = 'auto';
+    card.classList.remove('up');
+    if (!lastRow(d)) return;                       /* 非最后一行：永远朝下 */
+    var sec = kw.closest('section') || document.body;
+    var limit = sec.getBoundingClientRect().bottom - 22;
+    var h = card.getBoundingClientRect().height;   /* 用真实高度，别用取整的 offsetHeight */
+    if (d.getBoundingClientRect().bottom + h > limit) {
+      card.classList.add('up');                    /* 底部贴着格子下沿朝上长 → 卡片内部仍是"标题在上" */
+      card.style.top = 'auto';
+      card.style.bottom = (kw.clientHeight - cell.bottom) + 'px';
+    }
   }
-  for (var i = 0; i < boxes.length; i++) {
-    (function (d) {
-      d.addEventListener('toggle', function () {
-        if (!d.open) { d.classList.remove('up'); return; }
-        closeOthers(d);
-        place(d);
-      });
-      var panel = d.querySelector('p');                        /* 点解释文字＝关闭 */
-      if (panel) panel.addEventListener('click', function () { d.open = false; });
-    })(boxes[i]);
+  function open(d) {
+    clearTimeout(hideT);
+    if (cur && cur !== d) cur.classList.remove('open-kw');
+    cur = d;
+    d.classList.add('open-kw');
+    card.hidden = false;
+    place(d);
+    card.classList.add('in');
   }
-  var t;
-  window.addEventListener('resize', function () {
-    clearTimeout(t);
-    t = setTimeout(function () {
-      for (var i = 0; i < boxes.length; i++) if (boxes[i].open) place(boxes[i]);
-    }, 150);
+  function close() {
+    if (!cur) return;
+    var d = cur;
+    cur = null;
+    d.classList.remove('open-kw');
+    d.open = false;
+    card.classList.remove('in');
+    clearTimeout(hideT);
+    hideT = setTimeout(function () { card.hidden = true; }, 180);
+  }
+  boxes.forEach(function (d) {
+    d.addEventListener('toggle', function () {
+      if (d.open) {
+        boxes.forEach(function (o) { if (o !== d && o.open) o.open = false; });
+        open(d);
+      } else if (cur === d) {
+        close();
+      }
+    });
   });
+  card.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' || e.keyCode === 27) close();
+  });
+  window.addEventListener('resize', function () { if (cur) place(cur); });
 })();
