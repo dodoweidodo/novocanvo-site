@@ -48,10 +48,36 @@
     if (a) closeMenu();
   });
 
-  var initial = param() || stored() || 'en';
+  var onCnHost = location.hostname.indexOf('cn.') === 0;
+  var initial = param() || stored() || (onCnHost ? 'zh' : 'en');
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () { apply(initial); });
   } else {
     apply(initial);
   }
+})();
+
+/* ---------- 版本分流（语言 + IP 双判据）----------
+   规则：中文浏览器 且 IP 在中国 → 跳 cn 版；
+        其余（含海外中文用户）留在主站（欧美更快）。
+   只在主站生效；手动选过语言就不再跳；geo 接口 300ms 超时或失败则不跳（安全兜底）。 */
+(function () {
+  var CN = 'cn.novocanvo.com';
+  var host = location.hostname.replace(/^www\./, '');
+  if (host === CN || host.indexOf('cn.') === 0) return;
+  try { if (localStorage.getItem('ncv_lang')) return; } catch (e) {}
+  var zh = /^zh/i.test(navigator.language || '') ||
+           (navigator.languages || []).join(',').toLowerCase().indexOf('zh') >= 0;
+  if (!zh) return;
+  var done = false;
+  function go() {
+    if (done) return; done = true;
+    location.replace('https://' + CN + location.pathname + location.search + location.hash);
+  }
+  var ctl = ('AbortController' in window) ? new AbortController() : null;
+  var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 300);
+  fetch('https://www.cloudflare.com/cdn-cgi/trace', { cache: 'no-store', signal: ctl ? ctl.signal : undefined })
+    .then(function (r) { return r.text(); })
+    .then(function (t) { clearTimeout(timer); var m = /loc=([A-Z]{2})/.exec(t); if (m && m[1] === 'CN') go(); })
+    .catch(function () { clearTimeout(timer); });
 })();
