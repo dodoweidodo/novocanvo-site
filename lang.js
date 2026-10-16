@@ -38,6 +38,7 @@
     d.setAttribute('aria-hidden', open ? 'false' : 'true');
   };
   function closeMenu() {
+    if (location.hash === '#drawer') { location.hash = ''; }
     var d = document.getElementById('drawer');
     if (d && d.classList.contains('open')) window.toggleMenu();
   }
