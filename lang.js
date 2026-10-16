@@ -185,7 +185,11 @@
      · 没填 → 退回生成邮件草稿（老路子），页面里也留邮箱直链
    触发用事件委托，因为语言切换会重建 innerHTML。 */
 (function () {
-  var WEB3FORMS_KEY = '';                     /* ← 拿到 key 填这里即可切换成表单服务 */
+  /* Web3Forms access key（公开可放前端）：样品卡一个、款号与价格咨询一个，各自一条投递记录 */
+  var WEB3FORMS_KEYS = {
+    swatch:  '99f47969-3637-4141-b48a-d3190f81df51',   /* 表单名 sample req */
+    enquiry: '63d96677-02af-4a3a-bc98-a589eeaaf001'    /* 表单名 queries & quotes */
+  };
   var INBOX = 'sales@novocanvo.com';
 
   var COUNTRIES = [
@@ -400,13 +404,16 @@
     var d = payload(f, kind, zh);
     var note = box.querySelector('.sw-note');
 
-    if (WEB3FORMS_KEY) {                                   /* 表单服务：点一下就走 */
+    var wk = WEB3FORMS_KEYS[kind] || '';
+    if (wk) {                                              /* 表单服务：点一下就走 */
       var btn = box.querySelector('.sw-btn');
       btn.disabled = true; btn.textContent = t.sending;
       fetch('https://api.web3forms.com/submit', {
         method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          access_key: WEB3FORMS_KEY, subject: d.subject, from_name: 'novocanvo.com',
+          access_key: wk, subject: d.subject, from_name: 'novocanvo.com',
+          /* replyto：让对方填的邮箱直接成为回信地址，我们点"回复"即可 */
+          replyto: d.email || '',
           botcheck: false, page: location.href,
           name: d.name, company: d.company, jobtitle: d.jobtitle, website: d.website,
           country: d.country, address: d.address, need: d.need, interest: d.interest,
