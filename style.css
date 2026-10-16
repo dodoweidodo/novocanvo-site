@@ -638,16 +638,15 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 /* NOVO 与 CANVO 之间留一点空隙 */
 .half.l .mark.en{margin-right:.16em}
 /* 定格后笔刷跟着遮罩一起消失 */
-.intro.gone .brush,.intro.skip .brush{display:none}
+.intro.gone .brush,.intro.skip 
 .intro.skip .bpath,.intro.skip 
 
 /* ---------- 开场圆环 v3：真圆 + 裁在门幕内 ---------- */
-.half{overflow:hidden}
-.brush{position:absolute;top:0;height:100%;width:200%;pointer-events:none;z-index:4}
-.half.l .brush{left:0}
-.half.r .brush{left:-100%}
+
+.half.l 
+.half.r 
 .half .mark{z-index:2}
-.brush{z-index:1}
+
 
 
 
@@ -656,17 +655,22 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 
 /* ---------- 开场笔刷：用生成图 + conic 遮罩逆时针扫出 ---------- */
 @property --ring{syntax:'<angle>';initial-value:360deg;inherits:false}
-.half{overflow:hidden}
-.brush{position:absolute;top:0;height:100%;width:200%;z-index:1;pointer-events:none;
-  background:url(images/brush-ring.png) center/86% no-repeat;
-  mix-blend-mode:screen;
-  opacity:.94;--ring:360deg;
-  -webkit-mask-image:conic-gradient(from 45deg, transparent 0deg var(--ring), #000 var(--ring) 360deg);
-          mask-image:conic-gradient(from 45deg, transparent 0deg var(--ring), #000 var(--ring) 360deg);
-  animation:ringdraw 1.9s cubic-bezier(.42,.05,.58,.95) .95s forwards}
+
 @keyframes ringdraw{from{--ring:360deg}to{--ring:0deg}}
 .half .mark{z-index:2}
-@media(max-width:900px){.brush{background-size:auto 78%}}
+@media(max-width:900px){}
 
 /* 新颐元整体左移，平衡画面（原来贴在接缝上） */
 .half.l .mark.zh{right:38px}
+
+/* ---------- 开场笔刷：单层不裁 + 遮罩软边 + 开门前淡出 ---------- */
+.brush{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;
+  background:url(images/brush-ring.png) center/contain no-repeat;
+  mix-blend-mode:screen;opacity:.94;--ring:360deg;
+  -webkit-mask-image:conic-gradient(from 45deg, transparent 0deg, transparent calc(var(--ring) - 12deg), #000 var(--ring), #000 360deg);
+          mask-image:conic-gradient(from 45deg, transparent 0deg, transparent calc(var(--ring) - 12deg), #000 var(--ring), #000 360deg);
+  animation:ringdraw 1.9s cubic-bezier(.42,.05,.58,.95) .95s forwards,
+            ringout .5s ease-in 3.7s forwards}
+@keyframes ringdraw{from{--ring:360deg}to{--ring:0deg}}
+@keyframes ringout{to{opacity:0}}
+.half .mark{z-index:2}
