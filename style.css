@@ -608,15 +608,18 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
   .drawer .drawer-foot{margin-top:26px;display:flex;justify-content:flex-end}
 }
 
-/* ---------- 无 JS 兜底：开场动画由 CSS 自己播完 ---------- */
-.half.l{animation:halfL 1s cubic-bezier(.76,0,.24,1) 2.9s forwards}
-.half.r{animation:halfR 1s cubic-bezier(.76,0,.24,1) 2.9s forwards}
-@keyframes halfL{to{transform:translateX(-100%)}}
-@keyframes halfR{to{transform:translateX(100%)}}
-.intro{animation:introHide .01s linear 4.15s forwards}
+/* ---------- 开场：只由这一套 CSS 时间线驱动（JS 只负责"跳过"和"只播一次"） ---------- */
+/* 之前 JS 用 .open 类 + transition 开门、CSS 又用 animation 开门，两者抢同一个 transform
+   → 会直接跳到终态（看起来像"弹进去"）。现在统一由 keyframes 驱动。 */
+@keyframes openL{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+@keyframes openR{from{transform:translateX(0)}to{transform:translateX(100%)}}
+.half.l{animation:openL 1.2s cubic-bezier(.76,0,.24,1) 2.9s forwards}
+.half.r{animation:openR 1.2s cubic-bezier(.76,0,.24,1) 2.9s forwards}
+.intro{animation:introHide .01s linear 4.4s forwards}
 @keyframes introHide{to{visibility:hidden;pointer-events:none}}
-.intro.skip .half{animation-delay:0s}
-.intro.skip{animation-delay:0s}
+.intro.skip .half,.intro.skip{animation-delay:0s!important}
+.intro.skip .half.l,.intro.skip .half.r{animation-duration:.7s}
+.intro.skip .ink{animation-delay:0s}
 
 /* ---------- 无 JS 兜底：汉堡用 :target 打开抽屉 ---------- */
 .drawer:target{transform:none}
