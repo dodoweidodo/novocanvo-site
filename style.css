@@ -665,10 +665,10 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 
 /* ---------- 开场笔刷：单层不裁 + 遮罩软边 + 开门前淡出 ---------- */
 .brush{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;
-  background:url(images/brush-ring.png) center/contain no-repeat;
+  background:url(images/brush-ring.png) center/auto 78% no-repeat;
   mix-blend-mode:screen;opacity:.94;--ring:360deg;
-  -webkit-mask-image:conic-gradient(from 45deg, transparent 0deg, transparent calc(var(--ring) - 12deg), #000 var(--ring), #000 360deg);
-          mask-image:conic-gradient(from 45deg, transparent 0deg, transparent calc(var(--ring) - 12deg), #000 var(--ring), #000 360deg);
+  -webkit-mask-image:conic-gradient(from 62deg, transparent 0deg, transparent calc(var(--ring) - 12deg), #000 var(--ring), #000 360deg);
+          mask-image:conic-gradient(from 62deg, transparent 0deg, transparent calc(var(--ring) - 12deg), #000 var(--ring), #000 360deg);
   animation:ringdraw 1.9s cubic-bezier(.42,.05,.58,.95) .95s forwards,
             ringout .5s ease-in 3.7s forwards}
 @keyframes ringdraw{from{--ring:360deg}to{--ring:0deg}}
