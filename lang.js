@@ -28,6 +28,25 @@
     apply(cur === 'zh' ? 'en' : 'zh');
   };
 
+  /* 移动端抽屉 */
+  window.toggleMenu = function () {
+    var d = document.getElementById('drawer'), sc = document.getElementById('scrim');
+    if (!d) return;
+    var open = d.classList.toggle('open');
+    if (sc) sc.classList.toggle('open', open);
+    document.body.classList.toggle('menu-open', open);
+    d.setAttribute('aria-hidden', open ? 'false' : 'true');
+  };
+  function closeMenu() {
+    var d = document.getElementById('drawer');
+    if (d && d.classList.contains('open')) window.toggleMenu();
+  }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('.drawer-nav a') : null;
+    if (a) closeMenu();
+  });
+
   var initial = param() || stored() || 'en';
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () { apply(initial); });

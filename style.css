@@ -580,3 +580,29 @@ html[data-lang="zh"] .brand,.langbtn{letter-spacing:normal}
 .band-full .ph-fade.bgimg::before{display:none}
 .galnote{max-width:44em;border-top:1px solid var(--line);padding-top:26px;margin-top:22px}
 .galnote .muted + .muted{margin-top:14px}
+
+/* ---------- 移动端：汉堡 + 半页抽屉 ---------- */
+.burger{display:none;flex-direction:column;justify-content:center;gap:4px;
+  width:34px;height:32px;padding:0;border:1px solid var(--line-2);background:none;cursor:pointer}
+.burger span{display:block;width:15px;height:1.5px;background:var(--fg);margin:0 auto}
+.burger:hover{border-color:var(--fg)}
+.drawer,.scrim{display:none}
+
+@media(max-width:900px){
+  .langbtn{margin-left:auto}
+  .burger{display:flex;margin-left:14px}
+  .drawer{display:block;position:fixed;top:0;right:0;width:62%;height:100%;
+    background:var(--bg-2);border-left:1px solid var(--line);z-index:60;
+    transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+    padding:88px 26px 30px;overflow-y:auto}
+  .drawer.open{transform:none}
+  .drawer-nav{display:flex;flex-direction:column}
+  .drawer-nav a{font-family:var(--serif);font-size:22px;padding:17px 0;
+    border-bottom:1px solid var(--line);letter-spacing:.02em}
+  .drawer-nav a:active{color:var(--muted)}
+  .scrim{display:block;position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.5);
+    opacity:0;pointer-events:none;transition:opacity .3s}
+  .scrim.open{opacity:1;pointer-events:auto}
+  body.menu-open{overflow:hidden}
+  .drawer .drawer-foot{margin-top:26px;display:flex;justify-content:flex-end}
+}

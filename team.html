@@ -22,8 +22,21 @@
     <button class="langbtn" type="button" onclick="toggleLang()" aria-label="Switch language">
       <span data-l="en">EN</span><span class="sep">/</span><span data-l="zh">中文</span>
     </button>
+    <button class="burger" type="button" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
+  <div class="drawer" id="drawer" aria-hidden="true">
+    <nav class="drawer-nav">
+      <a href="index.html" data-zh="首页">Home</a>
+      <a href="products.html" data-zh="产品">Products</a>
+      <a href="gallery.html" data-zh="画廊">Gallery</a>
+      <a href="team.html" data-zh="团队">Team</a>
+      <a href="contact.html" data-zh="联系我们">Contact us</a>
+    </nav>
+  </div>
+  <div class="scrim" id="scrim" onclick="toggleMenu()"></div>
 
 <main>
   <div class="wrap">
