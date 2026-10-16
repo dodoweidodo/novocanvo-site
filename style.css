@@ -646,7 +646,7 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 .half.l 
 .half.r 
 .half .mark{z-index:2}
-.half{background:#000;overflow:hidden}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
+.half{overflow:hidden}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
 
 
 
@@ -677,3 +677,7 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
   background:url(images/brush-ring.png) center/auto 78% no-repeat;opacity:.96}
 .half.l .brush{left:0}
 .half.r .brush{left:-100%}
+
+/* 保证文字在笔迹之上（放在最后，避免被前面的规则覆盖） */
+.intro .half .mark{z-index:3 !important}
+.intro .brush{z-index:1 !important}
