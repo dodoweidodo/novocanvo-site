@@ -343,7 +343,8 @@ html[data-theme="paper"] .ph::before{
   color:var(--muted-2)}
 .pcard td:last-child{color:var(--muted)}
 .pcard tr:last-child td{border-bottom:none}
-.pcard tr.bestrow td:last-child{font-family:var(--serif);font-size:16px;color:var(--fg)}
+.pcard tr.bestrow td:last-child{font-family:var(--serif);font-size:16px}
+/* Best for 这行不再单独提色：与同一列的其它值一致（用户 2026-10-16：不要加深，统一一个字色） */
 
 @media(max-width:900px){
   .pcard .body{grid-template-columns:1fr;gap:20px}
@@ -604,16 +605,14 @@ html[data-lang="zh"] [data-zh].impact{letter-spacing:.06em}
 html[data-lang="zh"] .langbtn{letter-spacing:normal}
 .brand{letter-spacing:.17em}
 
-/* ---------- 这几处整块都用 Cambria（小号正文里的数字密集区）；其余靠 --serif 的 NumLining ---------- */
-.sells b,.spec td,.chips b,.facts b,.rmeta,.badge,.fine,.cap,.step .n,.pcard h3,.row .rn{
-  font-family:Cambria,"Palatino Linotype","Book Antiqua",Georgia,serif;
-  font-variant-numeric:lining-nums;
-  font-feature-settings:"lnum" 1;
-}
+/* ---------- 字体家族统一（2026-10-16）----------
+   原先这里单列了一条"整块换成 Cambria"的规则，导致站上并存 Cambria / Georgia 两种衬线。
+   现在取消：衬线一律走 --serif（数字由 NumLining 字体面齐线），其余小字走 --sans。
+   新增元素不用再挂字体，数字也不会歪。 */
 
 /* ---------- 选型表（products）：型号名一栏统一字体与字色 ---------- */
 .pick td:first-child{color:var(--fg)}
-.pick td:last-child{font-family:var(--serif);font-size:17px;color:var(--fg)}
+.pick td:last-child{font-family:var(--serif);font-size:17px;color:var(--muted)}
 
 /* ---------- 通栏背景图（替代斜线占位） ---------- */
 .band-full .ph-fade.bgimg{background-size:cover;background-position:36% 42%;
