@@ -646,7 +646,7 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 .half.l 
 .half.r 
 .half .mark{z-index:2}
-.intro .half{background:#000}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
+.half{background:#000;overflow:hidden}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
 
 
 
@@ -659,21 +659,21 @@ html[data-lang="zh"] .langbtn{letter-spacing:normal}
 
 @keyframes ringdraw{from{--ring:360deg}to{--ring:0deg}}
 .half .mark{z-index:2}
-.intro .half{background:#000}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
+.half{background:#000;overflow:hidden}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
 @media(max-width:900px){}
 
 /* 新颐元整体左移，平衡画面（原来贴在接缝上） */
 .half.l .mark.zh{right:38px}
 
 /* ---------- 开场笔刷：单层不裁 + 遮罩软边 + 开门前淡出 ---------- */
-.brush{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;
-  background:url(images/brush-ring.png) center/auto 78% no-repeat;
-  opacity:.96;--ring:360deg;
-  -webkit-mask-image:conic-gradient(from 62deg, transparent 0deg, transparent calc(var(--ring) - 12deg), #000 var(--ring), #000 360deg);
-          mask-image:conic-gradient(from 62deg, transparent 0deg, transparent calc(var(--ring) - 12deg), #000 var(--ring), #000 360deg);
-  animation:ringdraw 1.9s cubic-bezier(.42,.05,.58,.95) .95s forwards,
-            ringout .5s ease-in 3.7s forwards}
+
 @keyframes ringdraw{from{--ring:360deg}to{--ring:0deg}}
 @keyframes ringout{to{opacity:0}}
 .half .mark{z-index:2}
-.intro .half{background:#000}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
+.half{background:#000;overflow:hidden}   /* 与笔刷图的黑底无缝衔接，不用混合模式 */
+
+/* 圆环在每扇门里各一份：画圈时跨缝无缝，开门时被门切成两半一起滑走 */
+.brush{position:absolute;top:0;height:100%;width:200%;z-index:1;pointer-events:none;
+  background:url(images/brush-ring.png) center/auto 78% no-repeat;opacity:.96}
+.half.l .brush{left:0}
+.half.r .brush{left:-100%}
