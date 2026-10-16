@@ -1,0 +1,6 @@
+_archive/
+preview/
+preview.cmd
+*.bak
+*.bak.html
+_*.html
