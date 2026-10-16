@@ -84,8 +84,9 @@
 
 /* ---------- 产品页关键词条：一次只开一个；点开的格子原地浮起一张独立卡片 ----------
    卡片是一整个盒子（标题 + 解释），所以不存在"格子与展开之间的缝/宽度不一"；
-   格子本身留在网格里不动 → 行不被撑高、网格不重排。
-   现代浏览器靠 <details name> 原生互斥，这段负责卡片 + 兜底。 */
+   格子本身留在网格里不动 → 行不被撑高、网格不重排、下面那节也不会被顶一下。
+   打开动作**完全由 click 接管**（先藏格子文字 → 再置 open → 最后建卡片），
+   这样浏览器不会先按"native details 打开"排一次版；动画每次都由头播一遍（切换也一样）。 */
 (function () {
   var kw = document.querySelector('.kw');
   if (!kw) return;
@@ -96,7 +97,7 @@
   card.className = 'kwcard';
   card.hidden = true;
   kw.appendChild(card);
-  var cur = null, hideT = null;
+  var cur = null, built = null, hideT = null;
 
   function kwOffset() {                 /* 绝对定位的参照是 .kw 的 padding box，要扣掉它自己的边框 */
     var cs = getComputedStyle(kw);
@@ -113,7 +114,7 @@
       if (Math.round(boxes[i].getBoundingClientRect().top) > top + 2) return false;
     return true;
   }
-  function place(d) {
+  function build(d) {
     var s = d.querySelector('summary'), p = d.querySelector('p');
     card.innerHTML = '<div class="kwhead">' + (s ? s.innerHTML : '') + '</div>' + (p ? p.outerHTML : '');
     var cell = rectIn(d);
@@ -122,60 +123,58 @@
     card.style.top = cell.top + 'px';
     card.style.bottom = 'auto';
     card.classList.remove('up');
-    if (!lastRow(d)) return;                       /* 非最后一行：永远朝下 */
+    if (!lastRow(d)) return;                     /* 非最后一行：永远朝下 */
     var sec = kw.closest('section') || document.body;
     var limit = sec.getBoundingClientRect().bottom - 22;
-    var h = card.getBoundingClientRect().height;   /* 用真实高度，别用取整的 offsetHeight */
-    if (d.getBoundingClientRect().bottom + h > limit) {
-      card.classList.add('up');                    /* 底部贴着格子下沿朝上长 → 卡片内部仍是"标题在上" */
+    if (d.getBoundingClientRect().bottom + card.getBoundingClientRect().height > limit) {
+      card.classList.add('up');                  /* 底边贴着格子下沿朝上长 → 卡片内部仍是"标题在上" */
       card.style.top = 'auto';
       card.style.bottom = (kw.clientHeight - cell.bottom) + 'px';
     }
   }
-  function open(d) {
+  function show(d) {                             /* 藏字 → 建卡 → 定位 → 从头播动画 */
     clearTimeout(hideT);
-    if (cur && cur !== d) cur.classList.remove('open-kw');
+    if (cur && cur !== d && !cur.open) cur.classList.remove('open-kw');
     cur = d;
     d.classList.add('open-kw');
     card.hidden = false;
-    place(d);
     card.classList.add('in');
+    build(d);
+    built = d;
+    card.style.animation = 'none';                /* 切换时也重放"浮起"动画，不要生硬地换内容 */
+    void card.offsetWidth;
+    card.style.animation = '';
   }
   function close() {
     if (!cur) return;
     var d = cur;
-    cur = null;
+    cur = null; built = null;
     d.classList.remove('open-kw');
-    d.open = false;
+    if (d.open) d.open = false;
     card.classList.remove('in');
     clearTimeout(hideT);
     hideT = setTimeout(function () { card.hidden = true; }, 180);
   }
-  var hasBefore = ('onbeforetoggle' in document.createElement('details'));
   boxes.forEach(function (d) {
-    /* 关键：在浏览器真正切换 open **之前**就把格子里的解释藏掉，
-       否则会有一帧"被撑高"的布局跳动（下面那一节会先被顶下去再弹回来） */
-    if (hasBefore) {
-      d.addEventListener('beforetoggle', function (e) {
-        if (e.newState === 'open') d.classList.add('open-kw');
-      });
-    }
     var sm = d.querySelector('summary');
-    if (sm) sm.addEventListener('click', function () {        /* 老浏览器兜底（click 早于默认动作） */
-      if (!d.open) d.classList.add('open-kw');
+    if (sm) sm.addEventListener('click', function (e) {
+      if (d.open) return;                        /* 关闭走原生行为，由 toggle 统一收尾 */
+      e.preventDefault();                        /* 打开全交给这里：先藏文字，布局不会被顶一下 */
+      show(d);
+      d.open = true;
+    });
+    d.addEventListener('beforetoggle', function (e) {   /* 键盘等其它打开路径的兜底 */
+      if (e.newState === 'open') d.classList.add('open-kw');
     });
     d.addEventListener('toggle', function () {
-      if (d.open) {
-        boxes.forEach(function (o) { if (o !== d && o.open) o.open = false; });
-        open(d);
-      } else if (cur === d) {
-        close();
-      }
+      if (d.open) { if (built !== d) show(d); }
+      else if (cur === d) close();
+      else d.classList.remove('open-kw');
     });
   });
   card.addEventListener('click', close);
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' || e.keyCode === 27) close();
   });
-  window.addEventListener('resize', function () { if (cur) place(cur); });
+  window.addEventListener('resize', function () { if (cur) build(cur); });
 })();
