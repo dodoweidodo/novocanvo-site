@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/index.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/index.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/index.html">
-<link rel="stylesheet" href="style.css?v=44">
+<link rel="stylesheet" href="style.css?v=45">
 </head>
 <body>
 
@@ -218,7 +218,7 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
     if(done) return; done=true;
     vids.forEach(function(v){ try{v.pause();}catch(e){} });   /* 冻在最后一帧，门带着两半环滑走 */
     el.classList.add('open');
-    setTimeout(function(){ el.classList.add('gone2'); }, 1250);
+    setTimeout(function(){ el.classList.add('gone2'); }, 1190);
   }
   var skipped=false;
   function skip(){
@@ -240,11 +240,11 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   var started=false;
   function start(){
     if(started||skipped) return; started=true;
-    vids.forEach(function(v){ var p=v.play(); if(p&&p.catch)p.catch(function(){}); });
+    vids.forEach(function(v){ v.playbackRate=1.05; var p=v.play(); if(p&&p.catch)p.catch(function(){}); });
     var dur=(isFinite(vids[0].duration)&&vids[0].duration>0.4)?vids[0].duration:2.709;
-    setTimeout(openDoors,(dur*1000)+550);          /* 画完 + 停顿 550ms → 开门 */
+    setTimeout(openDoors,(dur*1000/1.05)+262);          /* 画完 + 停顿 550ms → 开门 */
   }
-  vids[0].addEventListener('canplay',function(){ setTimeout(start,1000); },{once:true});  /* 落笔延迟 1s */
+  vids[0].addEventListener('canplay',function(){ setTimeout(start,857); },{once:true});  /* 落笔延迟 1s */
   setTimeout(function(){ if(!started) start(); },2500);   /* 兜底：2.5s 还没就绪也开跑 */
 })();
 
@@ -265,6 +265,6 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   }
 })();
 </script>
-<script src="lang.js?v=44"></script>
+<script src="lang.js?v=45"></script>
 </body>
 </html>
