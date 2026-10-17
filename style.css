@@ -801,8 +801,8 @@ to{--ring:0deg}}
 .intro.v2 .mark.en i:nth-child(4){animation-delay:1.429s}
 /* 新颐元：新 .60s / 颐 .55s / 元 .50s（起 1.54 / 1.75 / 1.95，收在 2.45） */
 .intro.v2 .mark.zh i{animation-name:revealFade;animation-timing-function:ease-in-out;animation-fill-mode:both}
-.intro.v2 .mark.zh i:nth-child(1){animation-duration:.60s;animation-delay:1.64s}
-.intro.v2 .mark.zh i:nth-child(2){animation-duration:.55s;animation-delay:1.85s}
+.intro.v2 .mark.zh i:nth-child(1){animation-duration:.60s;animation-delay:1.56s}
+.intro.v2 .mark.zh i:nth-child(2){animation-duration:.55s;animation-delay:1.80s}
 .intro.v2 .mark.zh i:nth-child(3){animation-duration:.50s;animation-delay:2.05s}
 @keyframes letterOut{to{opacity:0}}
 @keyframes revealFade{from{opacity:0}to{opacity:1}}
