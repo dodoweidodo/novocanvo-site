@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/index.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/index.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/index.html">
-<link rel="stylesheet" href="style.css?v=55">
+<link rel="stylesheet" href="style.css?v=56">
 </head>
 <body>
 
@@ -294,13 +294,17 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
 
 /* ---- Scroll 箭头：固定在底部，到最后一段时淡出 ---- */
 (function(){
-  var sd=document.querySelector('.scrolldown'); if(!sd||!('IntersectionObserver' in window)) return;
-  var bs=document.querySelectorAll('.banner');
-  if(bs.length){
-    new IntersectionObserver(function(es){
-      es.forEach(function(e){sd.classList.toggle('hide',e.isIntersecting);});
-    },{rootMargin:'-50% 0px -50% 0px',threshold:0}).observe(bs[bs.length-1]);
-  }
+  var sd=document.querySelector('.scrolldown'); if(!sd) return;
+  var hasIO=!!('IntersectionObserver' in window);
+  /* 下滚箭头：只有真正滚到页面底部才隐藏。
+     旧逻辑盯「最后一段 banner 的中线」→ 还没到底就消失，真正到底时反而又露出来（用户实测）*/
+  var updDown=function(){
+    var y=window.pageYOffset||document.documentElement.scrollTop||0;
+    var max=y+(window.innerHeight||800), hh=document.documentElement.scrollHeight;
+    sd.classList.toggle('hide', max>=hh-10);
+  };
+  window.addEventListener('scroll',updDown,{passive:true});
+  window.addEventListener('resize',updDown); updDown();
   var su=document.getElementById('scrollup');
   if(su){
     var updUp=function(){                       /* 首屏 banner 基本离场后才出现（默认隐藏） */
@@ -333,13 +337,13 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
     if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
   });
   var st=document.querySelector('.stage');
-  if(st){
+  if(st&&hasIO){
     new IntersectionObserver(function(es){
       es.forEach(function(e){document.body.classList.toggle('past-stage',!e.isIntersecting);});
     },{threshold:0}).observe(st);
   }
 })();
 </script>
-<script src="lang.js?v=55"></script>
+<script src="lang.js?v=56"></script>
 </body>
 </html>

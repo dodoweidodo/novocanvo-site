@@ -468,7 +468,7 @@ body.intro-lock{overflow:hidden}
 .banner h1{color:#dcdad4}
 .banner .impact{color:var(--muted)}
 .banner:first-child .inner{transform:translateY(-4vh)}
-.scrolldown.hide,body.past-stage .scrolldown{opacity:0;pointer-events:none}
+.scrolldown.hide{opacity:0;pointer-events:none}   /* 只在页面真正到底时隐藏（不再跟 stage/banner 联动） */
 
 /* ---------- 页脚重排：左侧更宽、右侧两栏靠拢并右移 ---------- */
 footer .wrap{max-width:1340px}
