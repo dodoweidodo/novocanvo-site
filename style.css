@@ -795,15 +795,15 @@ to{--ring:0deg}}
 /* A：NOVO 逐字母退（1.05→1.89） */
 .intro.v2 .mark.l-en i,
 .intro.v2 .mark.en i{animation:letterOut .55s ease-in-out forwards}
-.intro.v2 .mark.en i:nth-child(1){animation-delay:1.05s}
-.intro.v2 .mark.en i:nth-child(2){animation-delay:1.143s}
-.intro.v2 .mark.en i:nth-child(3){animation-delay:1.236s}
-.intro.v2 .mark.en i:nth-child(4){animation-delay:1.329s}
+.intro.v2 .mark.en i:nth-child(1){animation-delay:1.15s}
+.intro.v2 .mark.en i:nth-child(2){animation-delay:1.243s}
+.intro.v2 .mark.en i:nth-child(3){animation-delay:1.336s}
+.intro.v2 .mark.en i:nth-child(4){animation-delay:1.429s}
 /* 新颐元：新 .60s / 颐 .55s / 元 .50s（起 1.54 / 1.75 / 1.95，收在 2.45） */
 .intro.v2 .mark.zh i{animation-name:revealFade;animation-timing-function:ease-in-out;animation-fill-mode:both}
-.intro.v2 .mark.zh i:nth-child(1){animation-duration:.60s;animation-delay:1.54s}
-.intro.v2 .mark.zh i:nth-child(2){animation-duration:.55s;animation-delay:1.75s}
-.intro.v2 .mark.zh i:nth-child(3){animation-duration:.50s;animation-delay:1.95s}
+.intro.v2 .mark.zh i:nth-child(1){animation-duration:.60s;animation-delay:1.64s}
+.intro.v2 .mark.zh i:nth-child(2){animation-duration:.55s;animation-delay:1.85s}
+.intro.v2 .mark.zh i:nth-child(3){animation-duration:.50s;animation-delay:2.05s}
 @keyframes letterOut{to{opacity:0}}
 @keyframes revealFade{from{opacity:0}to{opacity:1}}
 /* B：CANV 固定；O 下沉、A / S 从上往下落（2.45 起） */
@@ -812,9 +812,9 @@ to{--ring:0deg}}
 .intro.v2 .mark .tail .a,.intro.v2 .mark .tail .o{grid-area:1/1}
 .intro.v2 .mark .tail .s{grid-area:1/2}
 .intro.v2 .mark .tail .a,.intro.v2 .mark .tail .s{opacity:0}
-.intro.v2 .mark.rw .o{animation:oSink .70s ease-in-out forwards;animation-delay:2.45s}
-.intro.v2 .mark.rw .a{animation:dropIn .65s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:2.80s}
-.intro.v2 .mark.rw .s{animation:dropIn .65s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:3.00s}
+.intro.v2 .mark.rw .o{animation:oSink .70s ease-in-out forwards;animation-delay:2.55s}
+.intro.v2 .mark.rw .a{animation:dropIn .65s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:2.90s}
+.intro.v2 .mark.rw .s{animation:dropIn .65s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:3.10s}
 @keyframes oSink{to{transform:translateY(.85em);opacity:0}}
 @keyframes dropIn{from{transform:translateY(-.85em);opacity:0}to{transform:translateY(0);opacity:1}}
 @media(max-width:900px){
