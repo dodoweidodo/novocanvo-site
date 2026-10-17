@@ -866,3 +866,18 @@ to{--ring:0deg}}
 .intro.v1.v1open .half.l{transform:translateX(-100%)}
 .intro.v1.v1open .half.r{transform:translateX(100%)}
 .intro.v1.v1open .skipbar,.intro.v1.v1open .ainote-in{opacity:0}
+
+/* ===== 手机端 banner 版式（2026-10-17）=====
+   问题：① .duo2 在手机上没堆叠（仍是两列，横向溢出）② banner 高 78vh → 点 down 落地时下一段内容露出来
+   做法：duo2 单列；每屏正好一屏高；段内文字锚到底部（与桌面"文字在上"区分，也保证一屏只有一页内容） */
+@media(max-width:900px){
+  .banner{min-height:100vh;min-height:100svh;align-items:flex-end}
+  .banner:first-child{align-items:center}
+  .banner .inner{padding-bottom:13vh}
+  .banner:first-child .inner{padding-bottom:0}
+  .banner .duo2{grid-template-columns:1fr;gap:22px}
+  .banner .duo2>div{min-width:0}
+  .banner h2{font-size:clamp(21px,6.2vw,30px)}
+  .banner .p{font-size:15px;line-height:1.72}
+  .banner .sells div{font-size:14px}
+}
