@@ -881,3 +881,7 @@ to{--ring:0deg}}
   .banner .p{font-size:15px;line-height:1.72}
   .banner .sells div{font-size:14px}
 }
+
+/* 微信/无视频版：只走换字淡入，不出现画圈（用户要求） */
+.intro.v2.novideo .ring{display:none}
+.intro.v2.novideo .ainote-in{display:none}   /* 没有 AI 动画，就不需要那句声明 */

@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/index.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/index.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/index.html">
-<link rel="stylesheet" href="style.css?v=52">
+<link rel="stylesheet" href="style.css?v=53">
 </head>
 <body>
 
@@ -219,10 +219,12 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   var canVp9=!!(document.createElement('video').canPlayType('video/webm; codecs="vp9"'));
   var canMp4=!!(document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"'));
   var small=window.innerWidth<=900;
-  /* 透明 webm 只有这两类核心里拿得到；Safari / 微信 X5 → 用pre-baked 石墨底 mp4（背景色 = 门幕 #242628） */
-  var alphaOk=canVp9 && !safari && !wechat;
+  var noVideo=false; try{noVideo=new URLSearchParams(location.search).get('novideo')==='1';}catch(e){}
+  /* 微信 X5 视频表现太差（用户实测）→ 只有文字淡入版；Safari 用 pre-baked 石墨底 mp4（见下方分支） */
+  var alphaOk=canVp9 && !safari;
   var src = alphaOk ? (small?'images/intro_ring_960.webm':'images/intro_ring.webm')
           : (canMp4 ? (small?'images/intro_ring_960.mp4':'images/intro_ring.mp4') : null);
+  if(noVideo) src=null;
   var useVideo=vids.length>0 && !!src;
   var done=false, unlocked=false;
 
@@ -257,6 +259,15 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   el.addEventListener('click',skip);
   window.addEventListener('keydown',skip);
 
+  if(wechat||noVideo){                              /* 微信：不放视频，只走换字淡入 */
+    el.classList.add('v2','novideo');
+    setTimeout(function(){
+      if(done) return;
+      el.classList.add('preopen');
+      setTimeout(openDoors,262);
+    },3440);                                         /* 换字收尾（S 落 2.857+0.619）后开门 */
+    return;
+  }
   if(!useVideo){ inkFallback(); return; }
   el.classList.add('v2');
   vids.forEach(function(v){ v.src=src; try{v.load();}catch(e){} });
@@ -329,6 +340,6 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   }
 })();
 </script>
-<script src="lang.js?v=52"></script>
+<script src="lang.js?v=53"></script>
 </body>
 </html>
