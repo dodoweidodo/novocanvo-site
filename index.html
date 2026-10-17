@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/index.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/index.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/index.html">
-<link rel="stylesheet" href="style.css?v=47">
+<link rel="stylesheet" href="style.css?v=48">
 </head>
 <body>
 
@@ -210,47 +210,66 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   document.body.classList.add('intro-lock');
 
   var vids=[].slice.call(el.querySelectorAll('video.rv'));
-  var safari=/^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent||'');
+  var ua=navigator.userAgent||'';
+  var safari=/^((?!chrome|android|crios|fxios).)*safari/i.test(ua);
+  var wechat=/MicroMessenger/i.test(ua);          /* 微信内置浏览器：不认 VP9-alpha，直接走墨迹回落 */
   var canVp9=!!(document.createElement('video').canPlayType('video/webm; codecs="vp9"'));
-  var useVideo=vids.length>0 && canVp9 && !safari;
-  var done=false;
+  var useVideo=vids.length>0 && canVp9 && !safari && !wechat;
+  var done=false, unlocked=false;
+
+  function unlock(){                              /* 一定要解的：否则 body 被锁住，整页不能下滑 */
+    if(unlocked) return; unlocked=true;
+    document.body.classList.remove('intro-lock');
+    try{sessionStorage.setItem('ncv_intro','1');}catch(e){}
+  }
+  setTimeout(unlock,6500);                        /* 兜底：任何异常都不许把页面锁死 */
+
+  function inkFallback(){                         /* 回落：旧的墨迹光晕 + 门幕时间线（CSS 自带） */
+    if(done) return; done=true;
+    el.classList.remove('v2');
+    setTimeout(function(){ el.classList.add('gone'); unlock(); },5600);
+  }
 
   function openDoors(){
     if(done) return; done=true;
-    vids.forEach(function(v){ try{v.pause();}catch(e){} });   /* 冻在最后一帧，门带着两半环滑走 */
+    vids.forEach(function(v){ try{v.pause();}catch(e){} });
     el.classList.add('open');
-    setTimeout(function(){ el.classList.add('gone2'); }, 1190);
+    unlock();                                     /* 门一开始滑就解锁滚动 */
+    setTimeout(function(){ el.classList.add('gone2'); },1190);
   }
   var skipped=false;
   function skip(){
     if(skipped) return; skipped=true;
     vids.forEach(function(v){ try{v.pause();}catch(e){} });
     el.classList.add('skip','open');
-    setTimeout(finish,1250);
+    setTimeout(function(){ el.classList.add('gone2'); unlock(); },1190);
   }
   el.addEventListener('click',skip);
   window.addEventListener('keydown',skip);
 
-  if(!useVideo){                       /* 回退：原来的墨迹光晕 + 门幕时间线（CSS 里的旧动画） */
-    setTimeout(finish,5600);
-    return;
-  }
+  if(!useVideo){ inkFallback(); return; }
   el.classList.add('v2');
   var src=(window.innerWidth<=900)?'images/intro_ring_960.webm':'images/intro_ring.webm';
   vids.forEach(function(v){ v.src=src; try{v.load();}catch(e){} });
-  var started=false;
+  var started=false, playFailed=false;
   function start(){
     if(started||skipped) return; started=true;
-    vids.forEach(function(v){ v.playbackRate=1.05; var p=v.play(); if(p&&p.catch)p.catch(function(){}); });
+    vids.forEach(function(v){
+      v.playbackRate=1.05;
+      var p=v.play();
+      if(p&&p.catch) p.catch(function(){ playFailed=true; inkFallback(); });  /* 自动播放被拒 → 回落 */
+    });
+    setTimeout(function(){ if(playFailed||vids[0].readyState<2) inkFallback(); },1500);
     var dur=(isFinite(vids[0].duration)&&vids[0].duration>0.4)?vids[0].duration:2.709;
-    setTimeout(function(){                       /* 画完：先冻帧 + 让左下角小字/Skip 淡出，再开门 */
+    setTimeout(function(){                        /* 画完：冻帧 → 左下角小字/Skip 先淡出 → 再开门 */
+      if(done) return;
       vids.forEach(function(v){ try{v.pause();}catch(e){} });
       el.classList.add('preopen');
       setTimeout(openDoors,262);
-    }, dur*1000/1.05);          /* 画完 + 停顿 550ms → 开门 */
+    }, dur*1000/1.05);
   }
-  vids[0].addEventListener('canplay',function(){ setTimeout(start,857); },{once:true});  /* 落笔延迟 1s */
-  setTimeout(function(){ if(!started) start(); },2500);   /* 兜底：2.5s 还没就绪也开跑 */
+  vids[0].addEventListener('canplay',function(){ setTimeout(start,857); },{once:true});
+  setTimeout(function(){ if(!started) start(); },2500);
 })();
 
 /* ---- Scroll 箭头：固定在底部，到最后一段时淡出 ---- */
@@ -270,6 +289,6 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   }
 })();
 </script>
-<script src="lang.js?v=47"></script>
+<script src="lang.js?v=48"></script>
 </body>
 </html>
