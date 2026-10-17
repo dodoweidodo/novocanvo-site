@@ -771,21 +771,22 @@ to{--ring:0deg}}
    换字：A 1.05→2.45（NOVO 逐字母退 / 新颐元提前 0.35s 进）；B 2.45→3.65（O 沉 / A 落 / S 落） */
 .intro.v2{animation:none}
 .intro.v2 .ink{display:none}
-.intro.v2 .half{animation:none;overflow:hidden;
+.intro.v2 .half{animation:none;overflow:hidden;will-change:transform;
   transition:transform 1.095s cubic-bezier(.76,0,.24,1)}
 .intro.v2.open .half.l{transform:translateX(-100%)}
 .intro.v2.open .half.r{transform:translateX(100%)}
 .intro.v2.gone2{display:none}
 /* 环：每扇门里各一份，环心对齐接缝 → 开门时天然切成两半跟着门走 */
-.intro.v2 .ring{position:absolute;top:50%;left:0;width:120vmin;aspect-ratio:16/9;z-index:1;
+.intro.v2 .ring{position:absolute;top:50%;left:0;width:min(120vmin,1344px);aspect-ratio:16/9;z-index:1;
   transform:translate(-50%,-50%) translateX(0.67%)}
 .intro.v2 .half.l .ring{left:100%}
 .intro.v2 .half.r .ring{left:0}
-.intro.v2 .ring video{width:100%;height:100%;display:block}
+.intro.v2 .ring video{width:100%;height:100%;display:block;transform:translateZ(0)}
 .intro.v2 .mark{z-index:2}
 .intro.v2 .mark i{font-style:normal}
 /* 文字入场（只模糊淡入一次，不再整词淡出） */
-.intro.v2 .mark.en{animation:introIn .8s ease forwards}
+.intro.v2 .mark.en{animation:v2In .55s ease forwards}
+@keyframes v2In{from{opacity:0}to{opacity:1}}
 /* 新颐元：竖排三字，容器透明、逐字淡入 */
 .intro.v2 .mark.zh{writing-mode:horizontal-tb;display:flex;flex-direction:column;
   align-items:center;line-height:1}
@@ -818,9 +819,15 @@ to{--ring:0deg}}
 @keyframes oSink{to{transform:translateY(.85em);opacity:0}}
 @keyframes dropIn{from{transform:translateY(-.85em);opacity:0}to{transform:translateY(0);opacity:1}}
 @media(max-width:900px){
-  .intro.v2 .ring{width:130vmin}
+  .intro.v2 .ring{width:min(130vmin,960px)}
 }
 
 /* ---------- AI 生成声明（H3 社区许可要求；用户指定：最右下角、很小的字） ---------- */
 .ainote{font-size:9.5px;letter-spacing:.1em;color:var(--muted-2);text-align:right;
   margin-top:14px;text-transform:none}
+
+/* 开场左下角的 AI 声明（H3 许可要求；小小的字） */
+.intro .ainote-in{position:absolute;left:34px;bottom:26px;z-index:3;
+  font-size:9px;letter-spacing:.09em;line-height:1.2;color:var(--muted-2);opacity:.85;
+  max-width:42vw;pointer-events:none}
+@media(max-width:900px){ .intro .ainote-in{left:18px;bottom:18px;font-size:8.5px;max-width:56vw} }
