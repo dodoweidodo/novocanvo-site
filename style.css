@@ -789,7 +789,7 @@ to{--ring:0deg}}
 /* 新颐元：竖排三字，容器透明、逐字淡入 */
 .intro.v2 .mark.zh{writing-mode:horizontal-tb;display:flex;flex-direction:column;
   align-items:center;line-height:1}
-.intro.v2 .mark.alt{opacity:0}
+.intro.v2 .mark.alt{opacity:0;animation:none}          /* 关掉旧 CSS 的 introSwap（否则新颐元会二次淡入） */
 .intro.v2 .mark.alt.zh{opacity:1}
 .intro.v2 .mark.zh i{opacity:0;display:block}
 /* A：NOVO 逐字母退（1.05→1.89） */
@@ -820,3 +820,7 @@ to{--ring:0deg}}
 @media(max-width:900px){
   .intro.v2 .ring{width:130vmin}
 }
+
+/* ---------- AI 生成声明（H3 社区许可要求；用户指定：最右下角、很小的字） ---------- */
+.ainote{font-size:9.5px;letter-spacing:.1em;color:var(--muted-2);text-align:right;
+  margin-top:14px;text-transform:none}
