@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/index.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/index.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/index.html">
-<link rel="stylesheet" href="style.css?v=49">
+<link rel="stylesheet" href="style.css?v=50">
 </head>
 <body>
 
@@ -121,6 +121,9 @@
     </div>
   </div>
 
+  <button class="scrollup" id="scrollup" type="button" aria-label="Scroll to previous section">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14.5l6-6 6 6"/></svg>
+  </button>
   <button class="scrolldown" id="scrolldown" type="button" aria-label="Scroll to next section">
     <span data-zh="向下滚动">Scroll</span>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>
@@ -281,6 +284,26 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
       es.forEach(function(e){sd.classList.toggle('hide',e.isIntersecting);});
     },{rootMargin:'-50% 0px -50% 0px',threshold:0}).observe(bs[bs.length-1]);
   }
+  var su=document.getElementById('scrollup');
+  if(su){
+    var updUp=function(){                       /* 首屏 banner 基本离场后才出现（默认隐藏） */
+      var y0=window.pageYOffset||document.documentElement.scrollTop||0;
+      su.classList.toggle('show', y0>(window.innerHeight||800)*0.85);
+    };
+    window.addEventListener('scroll',updUp,{passive:true});
+    window.addEventListener('resize',updUp); updUp();
+    su.addEventListener('click',function(){
+      var panels2=[].slice.call(document.querySelectorAll('.banner'));
+      var yy=window.pageYOffset||document.documentElement.scrollTop||0, prev=null;
+      var th=yy-(window.innerHeight||800)*0.45;
+      for(var i=0;i<panels2.length;i++){
+        var t2=panels2[i].getBoundingClientRect().top+yy;
+        if(t2<th){ prev=panels2[i]; } else break;                /* 取最后一个在当前视口上方的段落 */
+      }
+      if(prev) prev.scrollIntoView({behavior:'smooth',block:'start'});
+      else window.scrollTo({top:0,behavior:'smooth'});
+    });
+  }
   sd.addEventListener('click',function(){
     var panels=[].slice.call(document.querySelectorAll('.banner'));
     var y=window.pageYOffset||document.documentElement.scrollTop||0, next=null;
@@ -300,6 +323,6 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   }
 })();
 </script>
-<script src="lang.js?v=49"></script>
+<script src="lang.js?v=50"></script>
 </body>
 </html>
