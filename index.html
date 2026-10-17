@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/index.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/index.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/index.html">
-<link rel="stylesheet" href="style.css?v=50">
+<link rel="stylesheet" href="style.css?v=51">
 </head>
 <body>
 
@@ -215,9 +215,15 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   var vids=[].slice.call(el.querySelectorAll('video.rv'));
   var ua=navigator.userAgent||'';
   var safari=/^((?!chrome|android|crios|fxios).)*safari/i.test(ua);
-  var wechat=/MicroMessenger/i.test(ua);          /* 微信内置浏览器：不认 VP9-alpha，直接走墨迹回落 */
+  var wechat=/MicroMessenger/i.test(ua);
   var canVp9=!!(document.createElement('video').canPlayType('video/webm; codecs="vp9"'));
-  var useVideo=vids.length>0 && canVp9 && !safari && !wechat;
+  var canMp4=!!(document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"'));
+  var small=window.innerWidth<=900;
+  /* 透明 webm 只有这两类核心里拿得到；Safari / 微信 X5 → 用pre-baked 石墨底 mp4（背景色 = 门幕 #242628） */
+  var alphaOk=canVp9 && !safari && !wechat;
+  var src = alphaOk ? (small?'images/intro_ring_960.webm':'images/intro_ring.webm')
+          : (canMp4 ? (small?'images/intro_ring_960.mp4':'images/intro_ring.mp4') : null);
+  var useVideo=vids.length>0 && !!src;
   var done=false, unlocked=false;
 
   function unlock(){                              /* 一定要解的：否则 body 被锁住，整页不能下滑 */
@@ -227,10 +233,11 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   }
   setTimeout(unlock,6500);                        /* 兜底：任何异常都不许把页面锁死 */
 
-  function inkFallback(){                         /* 回落：旧的墨迹光晕 + 门幕时间线（CSS 自带） */
+  function inkFallback(){                         /* 最后兜底：静态 NOVO | CANVO → 1.5s 开门（旧 CSS 的换字动画与新标记不兼容，不用了） */
     if(done) return; done=true;
-    el.classList.remove('v2');
-    setTimeout(function(){ el.classList.add('gone'); unlock(); },5600);
+    el.classList.remove('v2'); el.classList.add('v1');
+    setTimeout(function(){ el.classList.add('v1open'); },1500);
+    setTimeout(function(){ el.classList.add('gone2'); unlock(); },2750);
   }
 
   function openDoors(){
@@ -252,7 +259,6 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
 
   if(!useVideo){ inkFallback(); return; }
   el.classList.add('v2');
-  var src=(window.innerWidth<=900)?'images/intro_ring_960.webm':'images/intro_ring.webm';
   vids.forEach(function(v){ v.src=src; try{v.load();}catch(e){} });
   var started=false, playFailed=false;
   function start(){
@@ -323,6 +329,6 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   }
 })();
 </script>
-<script src="lang.js?v=50"></script>
+<script src="lang.js?v=51"></script>
 </body>
 </html>
