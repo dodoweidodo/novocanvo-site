@@ -8,18 +8,19 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/index.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/index.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/index.html">
-<link rel="stylesheet" href="style.css?v=40">
+<link rel="stylesheet" href="style.css?v=41">
 </head>
 <body>
 
 <!-- ============ 开场动画：NOVOCANVO → 新颐元 / CANVAS → 左右拉开 ============ -->
 <div class="intro" id="intro">  <div class="half l">
-    <span class="mark en">NOVO</span>
-    <span class="mark alt zh">新颐元</span>
+    <span class="mark en"><i>N</i><i>O</i><i>V</i><i>O</i></span>
+    <span class="mark alt zh"><i>新</i><i>颐</i><i>元</i></span>
+    <div class="ring"><video class="rv" muted playsinline preload="auto" aria-hidden="true"></video></div>
   </div>
   <div class="half r">
-    <span class="mark en">CANVO</span>
-    <span class="mark alt">CANVAS</span>
+    <span class="mark en rw">CANV<span class="tail"><span class="a">A</span><span class="s">S</span><span class="o">O</span></span></span>
+    <div class="ring"><video class="rv" muted playsinline preload="auto" aria-hidden="true"></video></div>
   </div>
   <div class="ink"></div>
   <span class="skipbar" id="skipbar">Skip</span>
@@ -205,16 +206,45 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
     try{sessionStorage.setItem('ncv_intro','1');}catch(e){}}
   if(seen||reduce){el.classList.add('gone');return;}
   document.body.classList.add('intro-lock');
-  setTimeout(finish,5600);
-  var t1,t2,skipped=false;
+
+  var vids=[].slice.call(el.querySelectorAll('video.rv'));
+  var safari=/^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent||'');
+  var canVp9=!!(document.createElement('video').canPlayType('video/webm; codecs="vp9"'));
+  var useVideo=vids.length>0 && canVp9 && !safari;
+  var done=false;
+
+  function openDoors(){
+    if(done) return; done=true;
+    vids.forEach(function(v){ try{v.pause();}catch(e){} });   /* 冻在最后一帧，门带着两半环滑走 */
+    el.classList.add('open');
+    setTimeout(function(){ el.classList.add('gone2'); }, 1250);
+  }
+  var skipped=false;
   function skip(){
     if(skipped) return; skipped=true;
-    clearTimeout(t1);clearTimeout(t2);
+    vids.forEach(function(v){ try{v.pause();}catch(e){} });
     el.classList.add('skip','open');
     setTimeout(finish,1250);
   }
   el.addEventListener('click',skip);
   window.addEventListener('keydown',skip);
+
+  if(!useVideo){                       /* 回退：原来的墨迹光晕 + 门幕时间线（CSS 里的旧动画） */
+    setTimeout(finish,5600);
+    return;
+  }
+  el.classList.add('v2');
+  var src=(window.innerWidth<=900)?'images/intro_ring_960.webm':'images/intro_ring.webm';
+  vids.forEach(function(v){ v.src=src; try{v.load();}catch(e){} });
+  var started=false;
+  function start(){
+    if(started||skipped) return; started=true;
+    vids.forEach(function(v){ var p=v.play(); if(p&&p.catch)p.catch(function(){}); });
+    var dur=(isFinite(vids[0].duration)&&vids[0].duration>0.4)?vids[0].duration:2.709;
+    setTimeout(openDoors,(dur*1000)+550);          /* 画完 + 停顿 550ms → 开门 */
+  }
+  vids[0].addEventListener('canplay',function(){ setTimeout(start,1000); },{once:true});  /* 落笔延迟 1s */
+  setTimeout(function(){ if(!started) start(); },2500);   /* 兜底：2.5s 还没就绪也开跑 */
 })();
 
 /* ---- Scroll 箭头：固定在底部，到最后一段时淡出 ---- */
@@ -234,6 +264,6 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   }
 })();
 </script>
-<script src="lang.js?v=40"></script>
+<script src="lang.js?v=41"></script>
 </body>
 </html>

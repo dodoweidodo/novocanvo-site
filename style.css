@@ -763,3 +763,60 @@ to{--ring:0deg}}
 .half.l .half.r 
 /* 保证文字在笔迹之上（放在最后，避免被前面的规则覆盖） */
 .intro 
+
+/* ================= 开场 v4：FLF2V 笔迹视频（2026-10-17）=================
+   仅在 .intro.v2 下生效（JS 检测到 VP9/WebM 且非 Safari 才加这个类）；
+   Safari / 无 VP9 → 不加 .v2，走上面那套墨迹光晕老动画。
+   时间轴：#intro 进入 → 字淡入(0-0.8s) → 1.0s 落笔 → 2.709s 画完 → 停 0.55s → 开门
+   换字：A 1.05→2.45（NOVO 逐字母退 / 新颐元提前 0.35s 进）；B 2.45→3.65（O 沉 / A 落 / S 落） */
+.intro.v2{animation:none}
+.intro.v2 .ink{display:none}
+.intro.v2 .half{animation:none;overflow:hidden;
+  transition:transform 1.15s cubic-bezier(.76,0,.24,1)}
+.intro.v2.open .half.l{transform:translateX(-100%)}
+.intro.v2.open .half.r{transform:translateX(100%)}
+.intro.v2.gone2{display:none}
+/* 环：每扇门里各一份，环心对齐接缝 → 开门时天然切成两半跟着门走 */
+.intro.v2 .ring{position:absolute;top:50%;left:0;width:120vmin;aspect-ratio:16/9;z-index:1;
+  transform:translate(-50%,-50%) translateX(0.67%)}
+.intro.v2 .half.l .ring{left:100%}
+.intro.v2 .half.r .ring{left:0}
+.intro.v2 .ring video{width:100%;height:100%;display:block}
+.intro.v2 .mark{z-index:2}
+.intro.v2 .mark i{font-style:normal}
+/* 文字入场（只模糊淡入一次，不再整词淡出） */
+.intro.v2 .mark.en{animation:introIn .8s ease forwards}
+/* 新颐元：竖排三字，容器透明、逐字淡入 */
+.intro.v2 .mark.zh{writing-mode:horizontal-tb;display:flex;flex-direction:column;
+  align-items:center;line-height:1}
+.intro.v2 .mark.alt{opacity:0}
+.intro.v2 .mark.alt.zh{opacity:1}
+.intro.v2 .mark.zh i{opacity:0;display:block}
+/* A：NOVO 逐字母退（1.05→1.89） */
+.intro.v2 .mark.l-en i,
+.intro.v2 .mark.en i{animation:letterOut .55s ease-in-out forwards}
+.intro.v2 .mark.en i:nth-child(1){animation-delay:1.05s}
+.intro.v2 .mark.en i:nth-child(2){animation-delay:1.143s}
+.intro.v2 .mark.en i:nth-child(3){animation-delay:1.236s}
+.intro.v2 .mark.en i:nth-child(4){animation-delay:1.329s}
+/* 新颐元：新 .60s / 颐 .55s / 元 .50s（起 1.54 / 1.75 / 1.95，收在 2.45） */
+.intro.v2 .mark.zh i{animation-name:revealFade;animation-timing-function:ease-in-out;animation-fill-mode:both}
+.intro.v2 .mark.zh i:nth-child(1){animation-duration:.60s;animation-delay:1.54s}
+.intro.v2 .mark.zh i:nth-child(2){animation-duration:.55s;animation-delay:1.75s}
+.intro.v2 .mark.zh i:nth-child(3){animation-duration:.50s;animation-delay:1.95s}
+@keyframes letterOut{to{opacity:0}}
+@keyframes revealFade{from{opacity:0}to{opacity:1}}
+/* B：CANV 固定；O 下沉、A / S 从上往下落（2.45 起） */
+.intro.v2 .mark .tail{display:inline-grid;grid-template-columns:auto auto;justify-items:start;
+  vertical-align:baseline}
+.intro.v2 .mark .tail .a,.intro.v2 .mark .tail .o{grid-area:1/1}
+.intro.v2 .mark .tail .s{grid-area:1/2}
+.intro.v2 .mark .tail .a,.intro.v2 .mark .tail .s{opacity:0}
+.intro.v2 .mark.rw .o{animation:oSink .70s ease-in-out forwards;animation-delay:2.45s}
+.intro.v2 .mark.rw .a{animation:dropIn .65s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:2.80s}
+.intro.v2 .mark.rw .s{animation:dropIn .65s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:3.00s}
+@keyframes oSink{to{transform:translateY(.85em);opacity:0}}
+@keyframes dropIn{from{transform:translateY(-.85em);opacity:0}to{transform:translateY(0);opacity:1}}
+@media(max-width:900px){
+  .intro.v2 .ring{width:130vmin}
+}
