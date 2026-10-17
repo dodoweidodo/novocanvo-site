@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/index.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/index.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/index.html">
-<link rel="stylesheet" href="style.css?v=48">
+<link rel="stylesheet" href="style.css?v=49">
 </head>
 <body>
 
@@ -121,10 +121,10 @@
     </div>
   </div>
 
-  <div class="scrolldown" aria-hidden="true">
+  <button class="scrolldown" id="scrolldown" type="button" aria-label="Scroll to next section">
     <span data-zh="向下滚动">Scroll</span>
-    <svg viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></svg>
-  </div>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>
+  </button>
 </main>
 
 <footer>
@@ -281,6 +281,17 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
       es.forEach(function(e){sd.classList.toggle('hide',e.isIntersecting);});
     },{rootMargin:'-50% 0px -50% 0px',threshold:0}).observe(bs[bs.length-1]);
   }
+  sd.addEventListener('click',function(){
+    var panels=[].slice.call(document.querySelectorAll('.banner'));
+    var y=window.pageYOffset||document.documentElement.scrollTop||0, next=null;
+    var thresh=y+(window.innerHeight||800)*0.45;   /* 半个视口以下才算"下一段"（首屏 banner top ≈ 67，不能用 60px 判） */
+    for(var i=0;i<panels.length;i++){
+      var t=panels[i].getBoundingClientRect().top+y;
+      if(t>thresh){ next=panels[i]; break; }
+    }
+    var target=next||document.querySelector('footer');
+    if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+  });
   var st=document.querySelector('.stage');
   if(st){
     new IntersectionObserver(function(es){
@@ -289,6 +300,6 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   }
 })();
 </script>
-<script src="lang.js?v=48"></script>
+<script src="lang.js?v=49"></script>
 </body>
 </html>
