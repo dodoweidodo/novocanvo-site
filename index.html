@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/index.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/index.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/index.html">
-<link rel="stylesheet" href="style.css?v=46">
+<link rel="stylesheet" href="style.css?v=47">
 </head>
 <body>
 
@@ -243,7 +243,11 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
     if(started||skipped) return; started=true;
     vids.forEach(function(v){ v.playbackRate=1.05; var p=v.play(); if(p&&p.catch)p.catch(function(){}); });
     var dur=(isFinite(vids[0].duration)&&vids[0].duration>0.4)?vids[0].duration:2.709;
-    setTimeout(openDoors,(dur*1000/1.05)+262);          /* 画完 + 停顿 550ms → 开门 */
+    setTimeout(function(){                       /* 画完：先冻帧 + 让左下角小字/Skip 淡出，再开门 */
+      vids.forEach(function(v){ try{v.pause();}catch(e){} });
+      el.classList.add('preopen');
+      setTimeout(openDoors,262);
+    }, dur*1000/1.05);          /* 画完 + 停顿 550ms → 开门 */
   }
   vids[0].addEventListener('canplay',function(){ setTimeout(start,857); },{once:true});  /* 落笔延迟 1s */
   setTimeout(function(){ if(!started) start(); },2500);   /* 兜底：2.5s 还没就绪也开跑 */
@@ -266,6 +270,6 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
   }
 })();
 </script>
-<script src="lang.js?v=46"></script>
+<script src="lang.js?v=47"></script>
 </body>
 </html>

@@ -831,3 +831,8 @@ to{--ring:0deg}}
   font-size:9px;letter-spacing:.09em;line-height:1.2;color:var(--muted-2);opacity:.85;
   max-width:42vw;pointer-events:none}
 @media(max-width:900px){ .intro .ainote-in{left:18px;bottom:18px;font-size:8.5px;max-width:56vw} }
+
+/* 开屏前先让左下角小字与 Skip 淡出（用户要求：开屏前消失，不要跟着门一起滑走） */
+.intro.v2 .skipbar,.intro.v2 .ainote-in{transition:opacity .26s ease}
+.intro.v2.preopen .skipbar,.intro.v2.preopen .ainote-in,
+.intro.skip .skipbar,.intro.skip .ainote-in{opacity:0}
