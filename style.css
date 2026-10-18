@@ -885,3 +885,66 @@ to{--ring:0deg}}
 /* 微信/无视频版：只走换字淡入，不出现画圈（用户要求） */
 .intro.v2.novideo .ring{display:none}
 .intro.v2.novideo .ainote-in{display:none}   /* 没有 AI 动画，就不需要那句声明 */
+
+/* ================= 画廊 v1（2026-10-17）=================
+   结构：签约画家（hover/点击展开成满宽面板：主图背景 + 人物照浮起 + 右侧简介）→ 作品三类 → 投稿
+   第 2 位画家镜像（data-side="r"），第 3 位同第 1 位 */
+.gx-artists{border-top:1px solid var(--line)}
+.gx-head{display:flex;justify-content:space-between;align-items:baseline;padding:26px 0 6px}
+.gx-count{font-family:var(--serif);font-size:13px;letter-spacing:.14em;color:var(--muted-2)}
+.gx-a{border-bottom:1px solid var(--line);position:relative}
+.gx-a-head{display:grid;grid-template-columns:minmax(150px,.8fr) 1.7fr auto;gap:26px;align-items:baseline;
+  width:100%;max-width:1120px;margin:0 auto;padding:26px 34px;text-align:left;
+  background:none;border:0;font:inherit;color:inherit;cursor:pointer}
+.gx-a-name{font-family:var(--serif);font-size:clamp(18px,2vw,24px);letter-spacing:.02em;color:var(--fg)}
+.gx-a-brief{color:var(--muted);font-size:14px;line-height:1.6}
+.gx-a-more{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);
+  border-bottom:1px solid var(--line-2);padding-bottom:3px;white-space:nowrap}
+.gx-a-head:hover .gx-a-name{color:#fff}
+.gx-a-head:hover .gx-a-more{color:var(--fg)}
+
+.gx-a-open{position:relative;max-height:0;opacity:0;overflow:hidden;
+  transition:max-height .75s cubic-bezier(.76,0,.24,1),opacity .5s ease}
+.gx-a:hover .gx-a-open,.gx-a.open .gx-a-open{max-height:80vh;opacity:1}
+.gx-a-bg{position:absolute;inset:0;background-size:cover;background-position:center;
+  filter:grayscale(1) brightness(.42) contrast(1.06)}
+.gx-a-bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(19,20,21,.62),rgba(19,20,21,.30) 55%,rgba(19,20,21,.66))}
+.gx-a-body{position:relative;z-index:1;max-width:1120px;margin:0 auto;
+  padding:54px 34px 58px;display:flex;gap:54px;align-items:flex-start}
+.gx-a[data-side="r"] .gx-a-body{flex-direction:row-reverse}
+.gx-a-portrait{position:relative;flex:0 0 auto;width:clamp(168px,23vw,320px);aspect-ratio:3/4;
+  transform:translateY(-30px);background:rgba(255,255,255,.05);border:0}
+.gx-a-text{flex:1 1 auto;max-width:33em;padding-top:10px}
+.gx-a-title{font-family:var(--serif);font-size:clamp(19px,2.1vw,27px);line-height:1.42;color:#f3f2ee}
+.gx-a-p{color:rgba(236,235,231,.74);font-size:14.5px;line-height:1.75;margin-top:16px}
+.gx-a-link{display:inline-block;margin-top:22px;font-size:11.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--fg);border-bottom:1px solid rgba(255,255,255,.45);padding-bottom:4px}
+.gx-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(236,235,231,.34);
+  background-image:repeating-linear-gradient(135deg,transparent 0 13px,rgba(255,255,255,.05) 13px 14px)}
+
+/* 作品 */
+.gx-works{border-top:1px solid var(--line);margin-top:74px;padding:56px 0 8px}
+.gx-works h2{margin-top:10px}
+.gx-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:30px}
+.gx-g-h{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-2);margin-bottom:12px}
+.gx-thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.gx-thumb{position:relative;display:block;aspect-ratio:1;background:var(--bg-2)}
+
+/* 投稿 */
+.gx-submit{border-top:1px solid var(--line);margin-top:64px;padding:56px 0 10px}
+.gx-sub-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:58px;margin-top:22px}
+.gx-sub-grid .p+.p{margin-top:12px}
+
+@media(max-width:900px){
+  .gx-a-head{grid-template-columns:1fr auto;gap:8px 14px;padding:22px}
+  .gx-a-brief{grid-column:1/-1;font-size:13.5px}
+  .gx-a:hover .gx-a-open{max-height:0;opacity:0}         /* 手机不响应 hover */
+  .gx-a.open .gx-a-open{max-height:220vh;opacity:1}
+  .gx-a-body{flex-direction:column!important;gap:24px;padding:26px 22px 34px}
+  .gx-a-portrait{width:62%;transform:none}
+  .gx-a[data-side="r"] .gx-a-text{text-align:left}
+  .gx-groups{grid-template-columns:1fr;gap:30px}
+  .gx-sub-grid{grid-template-columns:1fr;gap:30px}
+}

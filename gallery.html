@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/gallery.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/gallery.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/gallery.html">
-<link rel="stylesheet" href="style.css?v=56">
+<link rel="stylesheet" href="style.css?v=57">
 </head>
 <body>
 
@@ -43,50 +43,131 @@
 
 <main>
   <div class="wrap phead">
-    <p class="label">Gallery</p>
-    <h1>Work made on our canvas</h1>
-    <p class="lede">Reserved for the artists who paint on NOVOCANVO canvas, and the pieces produced on it —
-      hand-painted work, and prints made from our gloss and matte grades.</p>
+    <p class="label" data-zh="画廊">Gallery</p>
+    <h1 data-zh="我们画布上的作品">Work made on our canvas</h1>
+    <p class="lede" data-zh="签约画家的作品，以及用我们画布完成的其他创作。作品、画家署名与所用款号随提交陆续发布。">Pieces by the artists we work with, and other work made on our cloth. Pieces, credits and the grade used are published as they are submitted.</p>
   </div>
 
-  <section>
+  <!-- ===== 品牌大使 ===== -->
+  <section class="gx-artists">
+    <div class="wrap gx-head">
+      <p class="label" data-zh="签约画家">Artists</p>
+      <p class="gx-count muted">03</p>
+    </div>
+
+    <article class="gx-a" data-side="l">
+      <button class="gx-a-head" type="button" aria-expanded="false">
+        <span class="gx-a-name">Artist 01</span>
+        <span class="gx-a-brief">Portrait painter · Singapore · painting on 3388 coarse</span>
+        <span class="gx-a-more">Find out more</span>
+      </button>
+      <div class="gx-a-open">
+        <div class="gx-a-bg" style="background-image:url('images/cuma.jpg')"></div>
+        <div class="gx-a-body">
+          <div class="gx-a-portrait"><span class="gx-ph">Portrait</span></div>
+          <div class="gx-a-text">
+            <p class="gx-a-title">Two sentences about the artist, in his own terms.</p>
+            <p class="gx-a-p">Where he works, how long he has painted, what he paints on and why he picked this cloth. Real detail only — no claims we cannot show.</p>
+            <a class="gx-a-link" href="#">Artist page</a>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="gx-a" data-side="r">
+      <button class="gx-a-head" type="button" aria-expanded="false">
+        <span class="gx-a-name">Artist 02</span>
+        <span class="gx-a-brief">Printmaker · Kuala Lumpur · gloss and matte grades</span>
+        <span class="gx-a-more">Find out more</span>
+      </button>
+      <div class="gx-a-open">
+        <div class="gx-a-bg" style="background-image:url('images/gloss.jpg')"></div>
+        <div class="gx-a-body">
+          <div class="gx-a-portrait"><span class="gx-ph">Portrait</span></div>
+          <div class="gx-a-text">
+            <p class="gx-a-title">Two sentences about the artist, in his own terms.</p>
+            <p class="gx-a-p">Editions, press, ink and the surface she prints on. What holds up under repeated passes.</p>
+            <a class="gx-a-link" href="#">Artist page</a>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="gx-a" data-side="l">
+      <button class="gx-a-head" type="button" aria-expanded="false">
+        <span class="gx-a-name">Artist 03</span>
+        <span class="gx-a-brief">Landscape painter · Jakarta · 4438 standard</span>
+        <span class="gx-a-more">Find out more</span>
+      </button>
+      <div class="gx-a-open">
+        <div class="gx-a-bg" style="background-image:url('images/4438.jpg')"></div>
+        <div class="gx-a-body">
+          <div class="gx-a-portrait"><span class="gx-ph">Portrait</span></div>
+          <div class="gx-a-text">
+            <p class="gx-a-title">Two sentences about the artist, in his own terms.</p>
+            <p class="gx-a-p">Scale, ground and how the cloth behaves under heavy body paint. Studio, city, years working.</p>
+            <a class="gx-a-link" href="#">Artist page</a>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ===== 作品 ===== -->
+  <section class="gx-works">
     <div class="wrap">
-      <p class="label">Pieces</p>
-      <div class="galnote">
-        <p class="muted">The gallery opens with the first artists working on our canvas. Pieces, artist
-          names and the grade used will be published here as they are submitted — hand-painted work, and
-          prints made from our gloss and matte grades.</p>
-        <p class="muted">If you would like your work shown here, see below.</p>
-        <div class="hero-cta">
-          <a class="btn btn-ghost" href="contact.html">Submit a piece</a>
+      <p class="label" data-zh="作品">Works</p>
+      <h2 data-zh="三类来源">Three sources</h2>
+      <div class="gx-groups">
+        <div class="gx-group">
+          <p class="gx-g-h" data-zh="精选">Featured</p>
+          <p class="muted" data-zh="留给投稿。第一件入选作品发布后占这一栏。">Reserved for submissions. The first accepted piece will sit here.</p>
+        </div>
+        <div class="gx-group">
+          <p class="gx-g-h" data-zh="签约画家">Signed artists</p>
+          <div class="gx-thumbs">
+            <a class="gx-thumb" href="#"><span class="gx-ph">01</span></a>
+            <a class="gx-thumb" href="#"><span class="gx-ph">02</span></a>
+            <a class="gx-thumb" href="#"><span class="gx-ph">03</span></a>
+          </div>
+          <p class="muted" data-zh="上面三位画家的作品，逐件附款号。">Work by the three artists above, each listed with the grade used.</p>
+        </div>
+        <div class="gx-group">
+          <p class="gx-g-h" data-zh="其他">Other work</p>
+          <p class="muted" data-zh="用我们画布完成、尚未签约的创作者作品，经本人同意后发布。">Pieces on our cloth by artists we do not represent, published with their consent.</p>
         </div>
       </div>
     </div>
   </section>
 
-
-  <section>
-    <div class="wrap duo">
-      <div>
-        <p class="label">For artists</p>
-        <p class="muted">If you paint or print on our canvas and would like the work shown here, send us
-          photographs of the finished piece, the work title and the grade you used. We will credit you and
-          link back to your site or profile.</p>
-      </div>
-      <div>
-        <p class="label">For galleries and studios</p>
-        <ul class="checks">
-          <li><b>Evaluation rolls</b> — for studios testing a grade before a production run</li>
-          <li><b>Private label</b> — your own brand on the roll, 3,000–5,000 m per run</li>
-          <li><b>Print grades</b> — gloss and matte, available for trial on your line</li>
-        </ul>
+  <!-- ===== 投稿（移到底部） ===== -->
+  <section class="gx-submit">
+    <div class="wrap">
+      <p class="label" data-zh="投稿">Submissions</p>
+      <h2 data-zh="把作品发给我们">Send us a piece</h2>
+      <div class="gx-sub-grid">
+        <div>
+          <p class="muted" data-zh="如果你在我们画布上作画或打印，希望作品出现在这里：发来成品照片、作品名称、所用款号，以及你想用的署名。">If you paint or print on our canvas and would like the work shown here, send photographs of the finished piece, the work title, the grade you used, and the credit line you want.</p>
+          <p class="muted" data-zh="署名与链接按你给的写，我们不代改。">Credits and links are published as you give them.</p>
+          <div class="hero-cta">
+            <a class="btn btn-ghost" href="contact.html" data-zh="提交作品">Submit a piece</a>
+          </div>
+        </div>
+        <div>
+          <p class="label" data-zh="给机构">For galleries and studios</p>
+          <ul class="checks">
+            <li><b data-zh="评估卷">Evaluation rolls</b> — for studios testing a grade before a production run</li>
+            <li><b data-zh="贴牌">Private label</b> — your own brand on the roll, 3,000–5,000 m per run</li>
+            <li><b data-zh="打印面">Print grades</b> — gloss and matte, available for trial on your line</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
   <div class="cta-band">
     <div class="wrap">
-      <h2>Contact</h2>
+      <h2 data-zh="联系">Contact</h2>
       <div class="hero-cta">
         <a class="btn btn-solid" href="contact.html" data-zh="联系我们">Contact us</a>
         <a class="arrow" href="https://wa.me/6593707007">WhatsApp</a>
@@ -147,6 +228,19 @@ function applyTheme(t){document.documentElement.dataset.theme=t; window.refreshT
 function toggleTheme(){applyTheme(document.documentElement.dataset.theme==='paper'?'':'paper');}
 try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyTheme('paper');}catch(e){}
 </script>
-<script src="lang.js?v=56"></script>
-</body>
+<script src="lang.js?v=57"></script>
+
+<script>
+(function(){
+  var As=[].slice.call(document.querySelectorAll('.gx-a'));
+  As.forEach(function(a){
+    var b=a.querySelector('.gx-a-head');
+    b.addEventListener('click',function(){
+      var open=a.classList.contains('open');
+      As.forEach(function(x){x.classList.remove('open');x.querySelector('.gx-a-head').setAttribute('aria-expanded','false');});
+      if(!open){a.classList.add('open');b.setAttribute('aria-expanded','true');}
+    });
+  });
+})();
+</script></body>
 </html>
