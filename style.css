@@ -988,7 +988,7 @@ body.sw-open{overflow:hidden}
 .gx-r[data-side="l"] .gx-r-side{order:1;text-align:right;align-items:flex-end}
 
 /* —— 缎带 —— */
-.gx-r-band{position:relative;height:clamp(96px,12.5vh,134px);overflow:hidden;background:var(--bg-deep);
+.gx-r-band{position:relative;height:clamp(120px,21vh,210px);overflow:hidden;background:var(--bg-deep);
   transition:height .72s cubic-bezier(.76,0,.24,1)}
 .gx-r:hover .gx-r-band,.gx-r.open .gx-r-band,.gx-r:focus-visible .gx-r-band{height:52vh}
 .gx-r-bg{position:absolute;inset:0;background-image:var(--img);background-size:cover;background-position:center;
@@ -999,7 +999,7 @@ body.sw-open{overflow:hidden}
 /* 艺术词：收起时停在缎带内侧一端，展开时上浮消散 */
 .gx-r-word{position:absolute;top:50%;transform:translateY(-50%);z-index:2;
   font-family:var(--serif);font-size:clamp(15px,1.5vw,20px);letter-spacing:.34em;color:rgba(255,255,255,.9);
-  text-shadow:0 1px 14px rgba(0,0,0,.65),0 0 3px rgba(0,0,0,.55);
+  text-shadow:0 2px 18px rgba(0,0,0,.85),0 1px 4px rgba(0,0,0,.75),0 0 1px rgba(0,0,0,.9);
   transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1);pointer-events:none}
 .gx-r[data-side="r"] .gx-r-word{right:52px}
 .gx-r[data-side="l"] .gx-r-word{left:52px}
@@ -1144,3 +1144,7 @@ html.lb-lock{overflow:hidden}
   .ap-pic{width:64%}
   .wp-meta{grid-template-columns:1fr;gap:16px}
 }
+
+/* 第 1 位画家的缎带：竖画放进横条必然只能看到一段，这里把取景区下移，保住下方的湖 */
+.gx-r[data-fit="low"] .gx-r-bg{background-position:center 78%}
+.gx-r[data-fit="low"]:hover .gx-r-bg,.gx-r[data-fit="low"].open .gx-r-bg{background-position:center 50%}
