@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/gallery.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/gallery.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/gallery.html">
-<link rel="stylesheet" href="style.css?v=65">
+<link rel="stylesheet" href="style.css?v=66">
 </head>
 <body>
 
@@ -62,7 +62,7 @@
           <span class="gx-r-word" data-zh="晕染">Wash</span>
           <div class="gx-r-desc">
             <p data-zh="现代油彩。色彩在控制下流动，颜料自身的流动形成水面与山体，厚涂收边">Contemporary oil. Colour is poured and held in control; the paint's own flow settles into water and rock, closed with heavy body.</p>
-            <a class="gx-r-link" href="artist-test.html" data-zh="画家页面">Artist page</a>
+            <a class="gx-r-link" href="artist-gao.html" data-zh="画家页面">Artist page</a>
           </div>
         </div>
         <div class="gx-r-side">
@@ -81,7 +81,7 @@
           <span class="gx-r-word" data-zh="海岸">Coast</span>
           <div class="gx-r-desc">
             <p data-zh="印象派与写实并用。海岸、山谷、人物与赛马，笔触可见，形体准确">Impressionist handling with a realist base — coast, valley, figures, a racecourse. Visible brushwork, accurate form.</p>
-            <a class="gx-r-link" href="artist-test.html" data-zh="画家页面">Artist page</a>
+            <a class="gx-r-link" href="artist-chen.html" data-zh="画家页面">Artist page</a>
           </div>
         </div>
         <div class="gx-r-side">
@@ -101,7 +101,7 @@
           <span class="gx-r-word" data-zh="潮汐">Tide</span>
           <div class="gx-r-desc">
             <p data-zh="风景油彩，用 4438 普通，最大 2 米宽。第三遍后布面仍平整">Landscape in oil on 4438 standard, up to two metres wide. The surface stays flat through the third pass.</p>
-            <a class="gx-r-link" href="artist-test.html" data-zh="画家页面">Artist page</a>
+            <a class="gx-r-link" href="artist-gao.html" data-zh="画家页面">Artist page</a>
           </div>
         </div>
         <div class="gx-r-side">
@@ -327,7 +327,7 @@
         <p class="gx-lb-title" id="gxLbTitle">—</p>
         <p class="gx-lb-meta" id="gxLbMeta">—</p>
       </div>
-      <a class="gx-lb-artist" id="gxLbArtist" href="artist-test.html" data-zh="画家页面">Artist page</a>
+      <a class="gx-lb-artist" id="gxLbArtist" href="artist-gao.html" data-zh="画家页面">Artist page</a>
     </div>
     <div class="gx-lb-more" id="gxLbMore">
       <p class="label" data-zh="更多来自这位画家的作品">More from this artist</p>
@@ -389,7 +389,7 @@ function applyTheme(t){document.documentElement.dataset.theme=t; window.refreshT
 function toggleTheme(){applyTheme(document.documentElement.dataset.theme==='paper'?'':'paper');}
 try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyTheme('paper');}catch(e){}
 </script>
-<script src="lang.js?v=65"></script>
+<script src="lang.js?v=66"></script>
 
 <script>
 (function(){
@@ -485,6 +485,7 @@ try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyThem
     if(!lb||!card) return;
     lbTitle.textContent=card.getAttribute('data-title')||'';
     lbMeta.textContent=[card.getAttribute('data-artist'), card.getAttribute('data-grade'), card.getAttribute('data-size')].filter(Boolean).join(' · ');
+    lbArtist.href = (card.getAttribute('data-artist')==='Chen') ? 'artist-chen.html' : 'artist-gao.html';
     var src0=card.querySelector('img');
     var media=lb.querySelector('.gx-lb-media');
     var big=(src0?src0.getAttribute('src'):'').replace(/-900\./,'-1600.');
