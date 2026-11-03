@@ -1152,7 +1152,8 @@ html.lb-lock{overflow:hidden}
 /* ===== 画家页（每位一页）：简介 + 作品格 ===== */
 .aw-works{border-top:1px solid var(--line);margin-top:56px;padding:44px 0 10px}
 .aw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:34px 24px;margin-top:22px}
-.aw-tile{position:relative;display:block;aspect-ratio:3/4;background:#2a2c2f;overflow:hidden}
-.aw-tile img{width:100%;height:100%;object-fit:contain;display:block;transition:opacity .3s}
+/* 画家页缩略图：按每张画自身比例占位（不裁、也不留灰边） */
+.aw-tile{position:relative;display:block;aspect-ratio:var(--ar,.75);background:transparent;overflow:hidden}
+.aw-tile img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .3s}
 .aw-tile:hover img{opacity:.86}
 @media(max-width:900px){ .aw-grid{grid-template-columns:repeat(2,1fr);gap:22px 14px} }
