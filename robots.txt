@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
-Disallow: /work-test.html
+
+# work-test.html 用 <meta name="noindex"> 排除收录（见该页第 8 行）。
+# 注意：robots.txt 里不要 Disallow 它 —— 被禁止抓取的页面不会被读取 noindex，
+# 反而可能被"链接但未抓取"地收录。允许抓取 + noindex 才是正确组合。
+# 该页也未列入 sitemap.xml。
 
 # AI crawlers and answer engines are explicitly welcome (GEO).
 User-agent: GPTBot

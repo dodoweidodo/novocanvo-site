@@ -328,6 +328,9 @@
           '<button class="sw-x" type="button" data-sw-close aria-label="Close">✕</button></div>' +
         '<p class="sw-lede">' + T[zh][cfg.lede] + '</p>' +
         '<form class="sw-form" novalidate data-kind="' + kind + '">' + formHTML(kind, zh) +
+          /* 真蜜罐：视觉隐藏的诱饵字段（不是 display:none，机器人会自动填它）。 */
+          '<input type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" ' +
+          'style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;opacity:0">' +
           '<p class="sw-note">' + T[zh].note + '</p>' +
           '<p class="sw-err" hidden></p>' +
           '<div class="sw-actions">' +
@@ -401,6 +404,9 @@
     if (missing.length) { err.textContent = t[cfg.reqMsg]; err.hidden = false; return; }
     if (!CONTACT_KEYS.some(function (n) { return val(f, n); })) { err.textContent = t.errNeed; err.hidden = false; return; }
     err.hidden = true;
+    /* 蜜罐命中 = 机器人：静默丢弃，不给任何反馈（也省一次 API 调用） */
+    var hp = f.querySelector('input[name="botcheck"]');
+    if (hp && hp.value) { return; }
     var d = payload(f, kind, zh);
     d.subject = '[novocanvo.com] ' + d.subject;   /* 统一前缀，便于收信时一眼认出/过滤 */
     var note = box.querySelector('.sw-note');
@@ -415,7 +421,8 @@
           access_key: wk, subject: d.subject,                       /* 显示名走后台 Sender Name */
           /* replyto：让对方填的邮箱直接成为回信地址，我们点"回复"即可 */
           replyto: d.email || '',
-          botcheck: false, page: location.href,
+          botcheck: ((f.querySelector('input[name="botcheck"]') || {}).value) || '',
+          page: location.origin + location.pathname,
           name: d.name, company: d.company, jobtitle: d.jobtitle, website: d.website,
           country: d.country, address: d.address, need: d.need, interest: d.interest,
           email: d.email, whatsapp: d.whatsapp, wechat: d.wechat, phone: d.phone,
