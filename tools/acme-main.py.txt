@@ -1,0 +1,185 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""novocanvo.com + www.novocanvo.com 证书签发（Let's Encrypt，classic profile，DNS-01）
+
+为什么用 classic profile：LE 2025 起默认链到新根 ISRG Root YR，Apple 信任库还没有它，
+macOS / iOS 会报 ERR_CERT_AUTHORITY_INVALID。classic profile 的链是
+    叶子 ← R10/R11 ← ISRG Root X1（Apple 从 2021 就信任）→ 各代设备通吃。
+
+用法（macOS，直连）：
+    python3 -m pip install --user cryptography
+    python3 acme-main.py order     # 打印要加到 DNS 的 TXT
+    # 去 Porkbun 加 TXT，等 1-2 分钟
+    python3 acme-main.py finish    # 验证 → 签发 → 写出 main.crt / main.key
+
+只依赖 cryptography；网络用标准库 urllib。
+"""
+import base64, json, os, sys, time, urllib.request, urllib.error
+from cryptography import x509
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.x509.oid import NameOID
+
+DIRECTORY = "https://acme-v02.api.letsencrypt.org/directory"
+DOMAINS = ["novocanvo.com", "www.novocanvo.com"]
+EMAIL = "sales@novocanvo.com"
+PROFILE = "classic"
+ACCT_KEY = "account.key"
+CERT_KEY = "main.key"
+CERT_OUT = "main.crt"
+STATE = "order.json"
+
+
+def b64(data: bytes) -> str:
+    return base64.urlsafe_b64encode(data).rstrip(b"=").decode()
+
+
+def b64json(obj) -> str:
+    return b64(json.dumps(obj, separators=(",", ":"), sort_keys=True).encode())
+
+
+def load_or_create(path, keytype="account"):
+    if os.path.exists(path):
+        return serialization.load_pem_private_key(open(path, "rb").read(), password=None)
+    k = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    open(path, "wb").write(k.private_bytes(serialization.Encoding.PEM,
+                                           serialization.PrivateFormat.TraditionalOpenSSL,
+                                           serialization.NoEncryption()))
+    return k
+
+
+def jwk(key):
+    nums = key.public_key().public_numbers()
+    return {"e": b64(nums.e.to_bytes((nums.e.bit_length() + 7) // 8, "big")),
+            "kty": "RSA",
+            "n": b64(nums.n.to_bytes((nums.n.bit_length() + 7) // 8, "big"))}
+
+
+def thumbprint(key):
+    import hashlib
+    return b64(hashlib.sha256(
+        json.dumps(jwk(key), separators=(",", ":"), sort_keys=True).encode()).digest())
+
+
+def http(url, data=None, headers=None, method=None):
+    req = urllib.request.Request(url, data=data, headers=headers or {}, method=method)
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return r.status, dict(r.headers), r.read()
+    except urllib.error.HTTPError as e:
+        return e.code, dict(e.headers), e.read()
+
+
+class Acme:
+    def __init__(self, key):
+        self.key = key
+        self.kid = None
+        st, _, body = http(DIRECTORY)
+        self.dir = json.loads(body)
+
+    def nonce(self):
+        st, hd, _ = http(self.dir["newNonce"], method="HEAD")
+        return hd["Replay-Nonce"]
+
+    def post(self, url, payload, use_jwk=False):
+        prot = {"alg": "RS256", "nonce": self.nonce(), "url": url}
+        if use_jwk or not self.kid:
+            prot["jwk"] = jwk(self.key)
+        else:
+            prot["kid"] = self.kid
+        p64 = b64(json.dumps(prot, separators=(",", ":"), sort_keys=True).encode())
+        pl = "" if payload is None else b64(json.dumps(payload, separators=(",", ":")).encode())
+        sig = self.key.sign((p64 + "." + pl).encode(), padding.PKCS1v15(), hashes.SHA256())
+        body = json.dumps({"protected": p64, "payload": pl, "signature": b64(sig)}).encode()
+        st, hd, resp = http(url, data=body,
+                            headers={"Content-Type": "application/jose+json"}, method="POST")
+        if st >= 400:
+            raise RuntimeError(f"{url} → {st}: {resp[:400].decode(errors='replace')}")
+        return st, hd, (json.loads(resp) if resp and resp[:1] in b"{[ " else resp)
+
+    def register(self):
+        st, hd, body = self.post(self.dir["newAccount"],
+                                 {"termsOfServiceAgreed": True, "contact": ["mailto:" + EMAIL]},
+                                 use_jwk=True)
+        self.kid = hd["Location"]
+        print("账号:", self.kid)
+
+    def new_order(self, csr_pem):
+        st, hd, body = self.post(self.dir["newOrder"],
+                                 {"identifiers": [{"type": "dns", "value": d} for d in DOMAINS],
+                                  "profile": PROFILE})
+        return hd["Location"], body
+
+
+def make_csr(key):
+    b = x509.CertificateSigningRequestBuilder().subject_name(
+        x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, DOMAINS[0])]))
+    b = b.add_extension(x509.SubjectAlternativeName([x509.DNSName(d) for d in DOMAINS]), critical=False)
+    return b.sign(key, hashes.SHA256())
+
+
+def main():
+    cmd = sys.argv[1] if len(sys.argv) > 1 else "order"
+    acct = load_or_create(ACCT_KEY)
+    a = Acme(acct)
+    a.register()
+    cert_key = load_or_create(CERT_KEY)
+    csr = make_csr(cert_key)
+
+    if cmd == "order":
+        url, body = a.new_order(csr.public_bytes(serialization.Encoding.PEM))
+        rows = []
+        for az_url in body["authorizations"]:
+            _, _, az = a.post(az_url, None)
+            for ch in az["challenges"]:
+                if ch["type"] == "dns-01":
+                    ka = ch["token"] + "." + thumbprint(acct)
+                    import hashlib
+                    rows.append({"domain": az["identifier"]["value"],
+                                 "name": "_acme-challenge." + az["identifier"]["value"],
+                                 "value": b64(hashlib.sha256(ka.encode()).digest())})
+        json.dump({"order": url, "rows": rows, "authz": body["authorizations"], "finalize": body["finalize"]},
+                  open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        print("\n=== 到 Porkbun 添加下面 TXT 记录（Type=TXT）===")
+        for r in rows:
+            print(f"\n  Host : {r['name']}")
+            print(f"  Value: {r['value']}")
+        print("\n加完等 1-2 分钟，再运行： python3 acme-main.py finish")
+        return
+
+    if cmd == "finish":
+        st = json.load(open(STATE, encoding="utf-8"))
+        for az_url in st["authz"]:
+            _, _, az = a.post(az_url, None)
+            if az["status"] == "pending":
+                for ch in az["challenges"]:
+                    if ch["type"] == "dns-01":
+                        a.post(ch["url"], {})
+        for i in range(30):
+            time.sleep(8)
+            states = []
+            for az_url in st["authz"]:
+                _, _, az = a.post(az_url, None)
+                states.append(az["status"])
+            print(f"  [{i}] 授权: {states}")
+            if all(s == "valid" for s in states):
+                break
+            if any(s == "invalid" for s in states):
+                raise SystemExit("验证失败：TXT 没生效或值不对")
+        _, _, order = a.post(st["order"], None)
+        der = csr.public_bytes(serialization.Encoding.DER)
+        _, _, fin = a.post(order["finalize"], {"csr": b64(der)})
+        for i in range(20):
+            if fin.get("status") in ("valid", "ready"):
+                break
+            time.sleep(5)
+            _, _, fin = a.post(st["order"], None)
+        _, _, chain = a.post(fin["certificate"], None)
+        open(CERT_OUT, "wb").write(chain if isinstance(chain, bytes) else chain.encode())
+        print("\n已写出：", CERT_OUT, "和", CERT_KEY)
+        print("\n证书前 200 字符（确认 issuer 是 R10/R11 而不是 YR1）：")
+        print(open(CERT_OUT, encoding="utf-8", errors="replace").read()[:200])
+
+
+if __name__ == "__main__":
+    main()
