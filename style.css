@@ -1243,6 +1243,7 @@ html.lb-lock{overflow:hidden}
 /* 行内等高：列数固定，格子按自身画幅比（不裁画）；同组画幅接近，高度差 <10% */
 .aw-row{display:grid;gap:22px;align-items:start}
 .aw-row--4{grid-template-columns:repeat(4,1fr)}
+.aw-row--5{grid-template-columns:repeat(5,1fr)}
 .aw-row--3{grid-template-columns:repeat(3,1fr)}
 .aw-row>.aw-tile{height:auto;aspect-ratio:var(--ar,1)}
 .aw-row+.aw-row{margin-top:clamp(30px,3.6vw,54px)}
