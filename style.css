@@ -1232,7 +1232,7 @@ html.lb-lock{overflow:hidden}
 /* ---------- 作品带重排：按画幅分组，特殊的一张放大 ----------
    不再用统一等分网格（太"板正"）。同 framing 归一行，异类分开摆。 */
 .aw-comp{display:grid;grid-template-columns:1.62fr .82fr;gap:clamp(28px,3.4vw,52px);
-  align-items:start;margin-top:24px}
+  align-items:stretch;margin-top:24px}
 .aw-cluster{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 .aw-cluster>*:nth-child(2){margin-top:38px}     /* 右上那张略微下沉，破掉齐顶的僵硬 */
 .aw-feature{position:relative;display:flex}
