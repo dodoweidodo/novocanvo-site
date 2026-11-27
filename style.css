@@ -1188,6 +1188,11 @@ html.lb-lock{overflow:hidden}
 .ar-stack figure{position:relative;overflow:hidden;background:var(--bg-2);margin:0;
   aspect-ratio:var(--ar,1)}
 .ar-stack img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* 一大一小不用"竖着摞"：小幅压在大图前沿，读起来像拼贴 */
+.ar-collage{position:relative;padding-bottom:8%}
+.ar-collage figure:last-child{align-self:end;margin-bottom:-16%;z-index:2;
+  box-shadow:0 22px 48px rgba(0,0,0,.5)}
 @media(max-width:900px){
   .ar-hero--split{grid-template-columns:1fr}
   .ar-hero--split>img{grid-column:1;grid-row:1;aspect-ratio:4/5;height:auto}
