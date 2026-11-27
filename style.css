@@ -1131,6 +1131,8 @@ html.lb-lock{overflow:hidden}
 .ap-grid{display:grid;grid-template-columns:.4fr .6fr;gap:clamp(28px,4vw,64px);align-items:start}
 .ap-pic{position:relative;aspect-ratio:3/4;background:var(--bg-2)}
 .ap-bio .muted{font-size:14.5px;line-height:1.78;margin-top:14px}
+.ap-bio .cloth{margin-top:52px}
+.ap-bio .quoteline{font-style:normal;color:var(--muted-2)}
 .wp-media{padding:6px 0 8px}
 .wp-pic{position:relative;width:100%;min-height:38vh;max-height:78vh;background:var(--panel);
   display:flex;align-items:center;justify-content:center;overflow:hidden}
