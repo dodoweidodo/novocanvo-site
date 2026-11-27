@@ -1237,9 +1237,8 @@ html.lb-lock{overflow:hidden}
 .aw-cluster>*:nth-child(2){margin-top:38px}     /* 右上那张略微下沉，破掉齐顶的僵硬 */
 /* 第三张居中，正好落在上面两张的接缝下方 */
 .aw-cluster>*:nth-child(3){grid-column:1/-1;justify-self:center;width:calc(50% - 11px)}
-.aw-feature{position:relative;display:flex}
-.aw-feature .aw-tile{flex:1;aspect-ratio:auto;min-height:100%}
-.aw-feature .aw-tile img{object-fit:cover}
+.aw-feature{position:relative;display:flex;align-items:flex-end}
+.aw-feature .aw-tile{flex:1;aspect-ratio:var(--ar,.9);height:auto;min-height:0}
 .aw-group{margin-top:24px}
 /* 行内等高：列数固定，格子按自身画幅比（不裁画）；同组画幅接近，高度差 <10% */
 .aw-row{display:grid;gap:22px;align-items:start}
