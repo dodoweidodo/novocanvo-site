@@ -1241,12 +1241,11 @@ html.lb-lock{overflow:hidden}
 .aw-feature .aw-tile{flex:1;aspect-ratio:auto;min-height:100%}
 .aw-feature .aw-tile img{object-fit:cover}
 .aw-group{margin-top:24px}
-/* 行内等高：列数固定，行高按该行的画幅比算 → 高度齐平、几乎不裁画 */
+/* 行内等高：列数固定，格子按自身画幅比（不裁画）；同组画幅接近，高度差 <10% */
 .aw-row{display:grid;gap:22px;align-items:start}
 .aw-row--4{grid-template-columns:repeat(4,1fr)}
-.aw-row--4>.aw-tile{aspect-ratio:auto;height:clamp(240px,30vw,440px)}
 .aw-row--3{grid-template-columns:repeat(3,1fr)}
-.aw-row--3>.aw-tile{aspect-ratio:auto;height:clamp(140px,11vw,165px)}
+.aw-row>.aw-tile{height:auto;aspect-ratio:var(--ar,1)}
 .aw-row+.aw-row{margin-top:clamp(30px,3.6vw,54px)}
 @media(max-width:900px){
   .aw-comp{grid-template-columns:1fr}
