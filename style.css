@@ -1170,13 +1170,13 @@ html.lb-lock{overflow:hidden}
   grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);align-items:center}
 .ar-hero--fade>img{grid-column:2;grid-row:1;width:100%;height:100%;object-fit:cover;
   object-position:52% 22%;display:block;
-  -webkit-mask-image:radial-gradient(ellipse 60% 56% at 54% 34%,#000 32%,rgba(0,0,0,.9) 52%,rgba(0,0,0,.26) 72%,transparent 88%);
-  mask-image:radial-gradient(ellipse 60% 56% at 54% 34%,#000 32%,rgba(0,0,0,.9) 52%,rgba(0,0,0,.26) 72%,transparent 88%)}
+  -webkit-mask-image:radial-gradient(ellipse 54% 52% at 58% 34%,#000 30%,rgba(0,0,0,.86) 48%,rgba(0,0,0,.2) 68%,transparent 84%);
+  mask-image:radial-gradient(ellipse 54% 52% at 58% 34%,#000 30%,rgba(0,0,0,.86) 48%,rgba(0,0,0,.2) 68%,transparent 84%)}
 .ar-hero--fade::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
   background:
-    linear-gradient(90deg,var(--bg) 0%,rgba(36,38,40,.72) 14%,transparent 34%),
-    linear-gradient(180deg,var(--bg) 0%,transparent 12%),
-    radial-gradient(ellipse 68% 62% at 54% 38%,transparent 34%,rgba(36,38,40,.62) 68%,var(--bg) 94%)}
+    linear-gradient(90deg,var(--bg) 0%,rgba(36,38,40,.95) 30%,rgba(36,38,40,.55) 44%,transparent 60%),
+    linear-gradient(180deg,var(--bg) 0%,transparent 14%),
+    radial-gradient(ellipse 62% 58% at 58% 38%,transparent 30%,rgba(36,38,40,.66) 66%,var(--bg) 92%)}
 .ar-hero--fade>.ar-hero-txt{grid-column:1;grid-row:1;display:flex;flex-direction:column;
   justify-content:center;padding:56px 48px}
 /* 陪衬作品（非作品带）：下缘柔化，和水墨氛围一致 */
