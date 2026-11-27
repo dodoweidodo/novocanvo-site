@@ -1235,18 +1235,22 @@ html.lb-lock{overflow:hidden}
   align-items:stretch;margin-top:24px}
 .aw-cluster{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 .aw-cluster>*:nth-child(2){margin-top:38px}     /* 右上那张略微下沉，破掉齐顶的僵硬 */
+/* 第三张居中，正好落在上面两张的接缝下方 */
+.aw-cluster>*:nth-child(3){grid-column:1/-1;justify-self:center;width:calc(50% - 11px)}
 .aw-feature{position:relative;display:flex}
 .aw-feature .aw-tile{flex:1;aspect-ratio:auto;min-height:100%}
 .aw-feature .aw-tile img{object-fit:cover}
 .aw-group{margin-top:24px}
-.aw-row{display:grid;gap:24px 22px;align-items:start}
-.aw-row--4{grid-template-columns:repeat(4,1fr)}
-.aw-row--3{grid-template-columns:repeat(3,1fr)}
+/* 行内等高：每张的 flex-grow 取自身画幅比 → 宽度按比例分、高度自动齐平、不裁画 */
+.aw-row{display:flex;gap:22px;align-items:stretch}
+.aw-row>.aw-tile{flex:var(--ar,1) 1 0;aspect-ratio:auto;height:clamp(200px,23vw,340px)}
+.aw-row--4>.aw-tile{height:clamp(230px,25vw,360px)}
 .aw-row+.aw-row{margin-top:clamp(30px,3.6vw,54px)}
 @media(max-width:900px){
   .aw-comp{grid-template-columns:1fr}
   .aw-cluster>*:nth-child(2){margin-top:0}
-  .aw-row--4{grid-template-columns:repeat(2,1fr)}
-  .aw-row--3{grid-template-columns:1fr}
+  .aw-cluster>*:nth-child(3){width:calc(50% - 7px)}
+  .aw-row{flex-wrap:wrap}
+  .aw-row>.aw-tile,.aw-row--4>.aw-tile{flex:1 1 44%;height:auto;aspect-ratio:var(--ar,1)}
 }
 @media(max-width:900px){ .aw-grid{grid-template-columns:repeat(2,1fr);gap:22px 14px} }
