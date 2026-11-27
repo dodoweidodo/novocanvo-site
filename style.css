@@ -1162,11 +1162,10 @@ html.lb-lock{overflow:hidden}
   color:var(--muted);font-size:14.5px;line-height:1.8}
 .ar-copy .ar-cloth{margin-top:56px;color:var(--muted)}
 .ar-copy .ar-cloth b{color:var(--accent);font-weight:600}
-.ar-stack{display:grid;gap:18px}
-.ar-stack figure{position:relative;overflow:hidden;background:var(--bg-2);margin:0}
+.ar-stack{display:grid;grid-template-columns:repeat(12,1fr);gap:20px;align-items:start}
+.ar-stack figure{position:relative;overflow:hidden;background:var(--bg-2);margin:0;
+  aspect-ratio:var(--ar,1)}
 .ar-stack img{width:100%;height:100%;object-fit:cover;display:block}
-.ar-stack figure:nth-child(1){aspect-ratio:4/3}
-.ar-stack figure:nth-child(2){aspect-ratio:1/1;width:78%;margin-left:auto}
 @media(max-width:900px){
   .ar-hero--split{grid-template-columns:1fr}
   .ar-hero--split>img{grid-column:1;grid-row:1;aspect-ratio:4/5;height:auto}
