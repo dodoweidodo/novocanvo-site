@@ -1173,14 +1173,11 @@ html.lb-lock{overflow:hidden}
   filter:drop-shadow(0 24px 64px rgba(0,0,0,.55));
   -webkit-mask-image:linear-gradient(180deg,#000 56%,rgba(0,0,0,.45) 80%,transparent 98%);
   mask-image:linear-gradient(180deg,#000 56%,rgba(0,0,0,.45) 80%,transparent 98%)}
-/* 页面底色是纯色，所以直接用同色渐变盖住画面边缘 = 无缝淡出（比 mask 稳） */
-.ar-hero--fade::before{content:"";position:absolute;top:0;bottom:0;left:42%;right:0;
-  pointer-events:none;z-index:1;
-  background:linear-gradient(90deg,var(--bg) 0%,rgba(36,38,40,.92) 4%,rgba(36,38,40,.55) 10%,transparent 22%),
-             linear-gradient(180deg,transparent 60%,rgba(36,38,40,.55) 84%,var(--bg) 100%)}
-.ar-hero--fade::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
-  background:linear-gradient(90deg,var(--bg) 0%,rgba(36,38,40,.55) 12%,transparent 30%),
-             linear-gradient(180deg,transparent 62%,rgba(36,38,40,.75) 88%,var(--bg) 100%)}
+/* 页面底色是纯色，用一层同色渐变从文字区过渡到画面 = 无缝淡出 */
+.ar-hero--fade::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(90deg,var(--bg) 0%,var(--bg) 20%,rgba(36,38,40,.96) 34%,
+             rgba(36,38,40,.62) 44%,rgba(36,38,40,.18) 51%,transparent 60%),
+             linear-gradient(180deg,transparent 64%,rgba(36,38,40,.5) 86%,var(--bg) 100%)}
 .ar-hero--fade>.ar-hero-txt{grid-column:1;grid-row:1;display:flex;flex-direction:column;
   justify-content:center;padding:56px 48px}
 /* 陪衬作品（非作品带）：下缘柔化，和水墨氛围一致 */
