@@ -1228,4 +1228,23 @@ html.lb-lock{overflow:hidden}
 .aw-tile{position:relative;display:block;aspect-ratio:var(--ar,.75);background:transparent;overflow:hidden}
 .aw-tile img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .3s}
 .aw-tile:hover img{opacity:.86}
+
+/* ---------- 作品带重排：按画幅分组，特殊的一张放大 ----------
+   不再用统一等分网格（太"板正"）。同 framing 归一行，异类分开摆。 */
+.aw-comp{display:grid;grid-template-columns:1.62fr .82fr;gap:clamp(28px,3.4vw,52px);
+  align-items:start;margin-top:24px}
+.aw-cluster{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.aw-cluster>*:nth-child(2){margin-top:38px}     /* 右上那张略微下沉，破掉齐顶的僵硬 */
+.aw-feature{position:relative}
+.aw-group{margin-top:24px}
+.aw-row{display:grid;gap:24px 22px;align-items:start}
+.aw-row--4{grid-template-columns:repeat(4,1fr)}
+.aw-row--3{grid-template-columns:repeat(3,1fr)}
+.aw-row+.aw-row{margin-top:clamp(30px,3.6vw,54px)}
+@media(max-width:900px){
+  .aw-comp{grid-template-columns:1fr}
+  .aw-cluster>*:nth-child(2){margin-top:0}
+  .aw-row--4{grid-template-columns:repeat(2,1fr)}
+  .aw-row--3{grid-template-columns:1fr}
+}
 @media(max-width:900px){ .aw-grid{grid-template-columns:repeat(2,1fr);gap:22px 14px} }

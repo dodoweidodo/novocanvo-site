@@ -8,7 +8,7 @@
 <link rel="alternate" hreflang="en" href="https://novocanvo.com/artist-chen.html">
 <link rel="alternate" hreflang="zh-CN" href="https://cn.novocanvo.com/artist-chen.html">
 <link rel="alternate" hreflang="x-default" href="https://novocanvo.com/artist-chen.html">
-<link rel="stylesheet" href="style.css?v=88">
+<link rel="stylesheet" href="style.css?v=89">
 <script>/* 走 http 访问时立刻升级到 https（OSS 静态托管没有 301 能力，只能靠这一句） */
 if(location.protocol==='http:'&&location.hostname!=='127.0.0.1'&&location.hostname!=='localhost'){
   location.replace('https://'+location.host+location.pathname+location.search+location.hash);
@@ -72,23 +72,27 @@ if(location.protocol==='http:'&&location.hostname!=='127.0.0.1'&&location.hostna
   <section class="aw-works">
     <div class="wrap">
       <p class="label" data-zh="作品">Works</p>
-      <div class="aw-grid">
-        <a class="aw-tile" href="work-test.html" style="--ar:1.458">
-          <img src="images/works/valley-900.webp" srcset="images/works/valley-900.webp 900w, images/works/valley-1600.webp 1600w"
-               sizes="(max-width:900px) 50vw, 300px" alt="山谷" loading="lazy" decoding="async">
-        </a>
-        <a class="aw-tile" href="work-test.html" style="--ar:1.488">
-          <img src="images/works/coast-900.webp" srcset="images/works/coast-900.webp 900w, images/works/coast-1600.webp 1600w"
-               sizes="(max-width:900px) 50vw, 300px" alt="海岸" loading="lazy" decoding="async">
-        </a>
-        <a class="aw-tile" href="work-test.html" style="--ar:0.881">
-          <img src="images/works/boy-900.webp" srcset="images/works/boy-900.webp 900w, images/works/boy-1600.webp 1600w"
-               sizes="(max-width:900px) 50vw, 300px" alt="男孩" loading="lazy" decoding="async">
-        </a>
-        <a class="aw-tile" href="work-test.html" style="--ar:1.297">
-          <img src="images/works/horse-race-900.webp" srcset="images/works/horse-race-900.webp 900w, images/works/horse-race-1600.webp 1600w"
-               sizes="(max-width:900px) 50vw, 300px" alt="赛马" loading="lazy" decoding="async">
-        </a>
+            <div class="aw-comp">
+        <div class="aw-cluster">
+          <a class="aw-tile" href="work-test.html" style="--ar:1.458">
+                    <img src="images/works/valley-900.webp" srcset="images/works/valley-900.webp 900w, images/works/valley-1600.webp 1600w"
+                         sizes="(max-width:900px) 50vw, 300px" alt="山谷" loading="lazy" decoding="async">
+                  </a>
+          <a class="aw-tile" href="work-test.html" style="--ar:1.488">
+                    <img src="images/works/coast-900.webp" srcset="images/works/coast-900.webp 900w, images/works/coast-1600.webp 1600w"
+                         sizes="(max-width:900px) 50vw, 300px" alt="海岸" loading="lazy" decoding="async">
+                  </a>
+          <a class="aw-tile" href="work-test.html" style="--ar:1.297">
+                    <img src="images/works/horse-race-900.webp" srcset="images/works/horse-race-900.webp 900w, images/works/horse-race-1600.webp 1600w"
+                         sizes="(max-width:900px) 50vw, 300px" alt="赛马" loading="lazy" decoding="async">
+                  </a>
+        </div>
+        <div class="aw-feature">
+          <a class="aw-tile" href="work-test.html" style="--ar:0.881">
+                    <img src="images/works/boy-900.webp" srcset="images/works/boy-900.webp 900w, images/works/boy-1600.webp 1600w"
+                         sizes="(max-width:900px) 50vw, 300px" alt="男孩" loading="lazy" decoding="async">
+                  </a>
+        </div>
       </div>
     </div>
   </section>
@@ -153,7 +157,7 @@ function applyTheme(t){document.documentElement.dataset.theme=t; window.refreshT
 function toggleTheme(){applyTheme(document.documentElement.dataset.theme==='paper'?'':'paper');}
 try{var q=new URLSearchParams(location.search).get('t');if(q==='paper')applyTheme('paper');}catch(e){}
 </script>
-<script src="lang.js?v=88"></script>
+<script src="lang.js?v=89"></script>
 
 <script>
 (function(){
