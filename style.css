@@ -1166,7 +1166,7 @@ html.lb-lock{overflow:hidden}
 /* ---------- 水墨 / 印象调：单幅画作化入暗底 ----------
    用蒙版让画面边缘渐隐进页面底色，不改动原画（衍生图会篡改作品，画家页不做）。
    只有单幅主视觉用；作品带里保持清晰裁切，别把作品切碎。 */
-.ar-hero--fade{height:92vh;min-height:560px;display:grid;
+.ar-hero--fade{height:92vh;min-height:560px;display:grid;background:var(--bg);
   grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);align-items:center}
 .ar-hero--fade>img{grid-column:2;grid-row:1;width:100%;height:100%;object-fit:contain;
   object-position:44% 46%;display:block;
