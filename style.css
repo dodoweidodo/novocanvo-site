@@ -1244,6 +1244,7 @@ html.lb-lock{overflow:hidden}
 .aw-row{display:grid;gap:22px;align-items:start}
 .aw-row--4{grid-template-columns:repeat(4,1fr)}
 .aw-row--5{grid-template-columns:repeat(5,1fr)}
+.aw-row--6{grid-template-columns:repeat(6,1fr)}
 .aw-row--3{grid-template-columns:repeat(3,1fr)}
 .aw-row>.aw-tile{height:auto;aspect-ratio:var(--ar,1)}
 .aw-row+.aw-row{margin-top:clamp(30px,3.6vw,54px)}
