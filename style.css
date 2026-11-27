@@ -1235,7 +1235,9 @@ html.lb-lock{overflow:hidden}
   align-items:start;margin-top:24px}
 .aw-cluster{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 .aw-cluster>*:nth-child(2){margin-top:38px}     /* 右上那张略微下沉，破掉齐顶的僵硬 */
-.aw-feature{position:relative}
+.aw-feature{position:relative;display:flex}
+.aw-feature .aw-tile{flex:1;aspect-ratio:auto;min-height:100%}
+.aw-feature .aw-tile img{object-fit:cover}
 .aw-group{margin-top:24px}
 .aw-row{display:grid;gap:24px 22px;align-items:start}
 .aw-row--4{grid-template-columns:repeat(4,1fr)}
