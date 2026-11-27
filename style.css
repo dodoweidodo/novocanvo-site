@@ -1241,16 +1241,18 @@ html.lb-lock{overflow:hidden}
 .aw-feature .aw-tile{flex:1;aspect-ratio:auto;min-height:100%}
 .aw-feature .aw-tile img{object-fit:cover}
 .aw-group{margin-top:24px}
-/* 行内等高：每张的 flex-grow 取自身画幅比 → 宽度按比例分、高度自动齐平、不裁画 */
-.aw-row{display:flex;gap:22px;align-items:stretch}
-.aw-row>.aw-tile{flex:var(--ar,1) 1 0;aspect-ratio:auto;height:clamp(150px,11.5vw,175px)}
-.aw-row--4>.aw-tile{height:clamp(240px,30vw,440px)}
+/* 行内等高：列数固定，行高按该行的画幅比算 → 高度齐平、几乎不裁画 */
+.aw-row{display:grid;gap:22px;align-items:start}
+.aw-row--4{grid-template-columns:repeat(4,1fr)}
+.aw-row--4>.aw-tile{aspect-ratio:auto;height:clamp(240px,30vw,440px)}
+.aw-row--3{grid-template-columns:repeat(3,1fr)}
+.aw-row--3>.aw-tile{aspect-ratio:auto;height:clamp(140px,11vw,165px)}
 .aw-row+.aw-row{margin-top:clamp(30px,3.6vw,54px)}
 @media(max-width:900px){
   .aw-comp{grid-template-columns:1fr}
   .aw-cluster>*:nth-child(2){margin-top:0}
   .aw-cluster>*:nth-child(3){width:calc(50% - 7px)}
-  .aw-row{flex-wrap:wrap}
-  .aw-row>.aw-tile,.aw-row--4>.aw-tile{flex:1 1 44%;height:auto;aspect-ratio:var(--ar,1)}
+  .aw-row{grid-template-columns:repeat(2,1fr)}
+  .aw-row--4>.aw-tile,.aw-row--3>.aw-tile{height:auto;aspect-ratio:var(--ar,1)}
 }
 @media(max-width:900px){ .aw-grid{grid-template-columns:repeat(2,1fr);gap:22px 14px} }
