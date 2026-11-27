@@ -1243,8 +1243,8 @@ html.lb-lock{overflow:hidden}
 .aw-group{margin-top:24px}
 /* 行内等高：每张的 flex-grow 取自身画幅比 → 宽度按比例分、高度自动齐平、不裁画 */
 .aw-row{display:flex;gap:22px;align-items:stretch}
-.aw-row>.aw-tile{flex:var(--ar,1) 1 0;aspect-ratio:auto;height:clamp(200px,23vw,340px)}
-.aw-row--4>.aw-tile{height:clamp(230px,25vw,360px)}
+.aw-row>.aw-tile{flex:var(--ar,1) 1 0;aspect-ratio:auto;height:clamp(150px,11.5vw,175px)}
+.aw-row--4>.aw-tile{height:clamp(240px,30vw,440px)}
 .aw-row+.aw-row{margin-top:clamp(30px,3.6vw,54px)}
 @media(max-width:900px){
   .aw-comp{grid-template-columns:1fr}
